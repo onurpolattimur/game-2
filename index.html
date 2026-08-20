@@ -41,6 +41,13 @@
   .btn.primary{background:var(--cream);color:var(--ink);font-weight:700}
   #deathScore,#winScore{color:var(--cream);font-size:34px;font-weight:700;text-shadow:2px 2px 0 #1B2136}
   .small{color:var(--mut);font-size:10.5px;letter-spacing:.1em}
+  #teachModal{position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:12px;
+    background:rgba(5,6,13,.62);z-index:6;padding:20px;text-align:center}
+  #teachModal.hidden{display:none}
+  #teachModal .tm{color:var(--cream);font-size:16px;font-weight:700;line-height:1.8;
+    letter-spacing:.05em;max-width:420px;text-shadow:2px 2px 0 #1B2136}
+  #teachModal .tm b{color:#FFE9A8}
   #teach{position:absolute;top:15%;left:0;right:0;text-align:center;
     color:var(--cream);font-size:14px;font-weight:700;letter-spacing:.06em;
     text-shadow:2px 2px 0 #1B2136;
@@ -55,6 +62,10 @@
 <div id="wrap"><div id="stage">
   <canvas id="c"></canvas>
   <div id="teach"></div>
+  <div id="teachModal" class="hidden">
+    <div class="tm" id="teachModalText"></div>
+    <div class="small">DOKUN → devam</div>
+  </div>
 
   <div class="corner">
     <button class="cbtn" id="sndBtn" title="Ses">🔊</button>
@@ -508,7 +519,7 @@ var recCrossed=false,catFollowT=0;
 var chain=0,hopClutch=false,goldTimer=0,goldPowerT=0,missedGold=false;
 var chainBest=0,runMaxChain=0,chainFlashT=0;
 var soulFree=null,nightsWalked=0,teachT=null,emanetSeen=false,spotB=null;
-var introSeen=false,introStep=0,tb=0; // olay-öğretileri: ilk yaşandığında bir kez
+var introSeen=false,introStep=0,tb=0,pauseTeach=false; // olay-öğretileri: ilk yaşandığında oyunu durdurur
 var sealPromptLb=-1,forceStart=false,nightBonus=false;
 var isFinal=false; // son biyomda mıyız (kutsal final)
 var MOM_TH=[3,7,12,17,22,27]; // eve ulaşan an eşikleri: evin geri gelen parçaları
@@ -833,7 +844,7 @@ function update(dt){
         for(var fi2=0;fi2<Math.min(sent,8);fi2++)
           fx.fly.push({t:-fi2*0.12,x0:lx-6-Math.random()*10,y0:H-40-Math.random()*20});
         fx.texts.push({x:lx,y:yRunner()-34,s:'RADYO',a:1.3,c:'#FFE9A8'});
-        teachOnce(8,'İsimler radyoya kuryelendi — şafak yayınında okunacaklar.',4200);
+        teachOnce(8,'Güvenli evi geçtin: taşıdığın <b>isimler radyoya kuryelendi</b>.<br>Şafak yayınında okunacaklar — radyo evi güçleniyor.');
         SFX.orb();
       }
       if(giftOn(8)&&me){me.st=1;fx.texts.push({x:lx,y:yRunner()-42,s:'GUVEN',a:1.1,c:'#FFE9A8'});}
@@ -873,7 +884,7 @@ function update(dt){
             if(h.x>camX-10&&h.x<camX+W+10)SFX.crash();
             if(h===lastHost&&(t-lastHopT)<0.6){
               clutch++;hopClutch=true;chain++;chainFlashT=0.45;
-              teachOnce(2,'Son anda devir! Üçü art arda gelirse duvarda yeni bir isim belirir.',4200);
+              teachOnce(2,'<b>Son anda devir!</b> Kurye tam yakalanırken mesajı kaptın.<br>Üçü art arda gelirse duvarda <b>yeni bir isim</b> belirir.');
               if(chain>runMaxChain)runMaxChain=chain;
               SFX.chainUp(chain); // her adımda perdesi yükselen çan
               if(me)me.st=Math.min(1,me.st+0.3); // beden son nefesini sana verir
@@ -940,9 +951,9 @@ function update(dt){
         var slx=startX+BND[sb2];
         if(me.x>slx-70&&me.x<slx-4){sealPromptLb=sb2;break;}
       }
-      if(sealPromptLb>=0&&!emanetSeen){ // bedelin bilgisi bir kez, nötr
+      if(sealPromptLb>=0&&!emanetSeen){ // bedelin bilgisi bir kez, durdurarak
         emanetSeen=true;saveProgress();
-        teach('Kapıya dokun: '+sealCost()+' isim burada kalır, gece buradan başlar. Dokunmazsan isimler radyoya gider.',5000);
+        pauseShow('Bu bir <b>güvenli ev</b>.<br>Kapıya dokunursan '+sealCost()+' isim burada kalır ve geceler artık buradan başlar.<br>Dokunmazsan isimler radyoya gider.');
       }
     }
     for(var bi2=0;bi2<bigMoms.length;bi2++){var bm=bigMoms[bi2];
@@ -998,7 +1009,7 @@ function update(dt){
       if(ob.lane===laneOf(me)&&Math.abs(ob.x-me.x)<(goldPowerT>0?26:(giftOn(6)?12:9))){
         orbs.splice(io,1);
         me.st=Math.min(1,me.st+(giftOn(6)?0.55:0.4)+(nightsWalked>=3?0.05:0)+(nightBonus&&me.x-startX<1200?0.15:0)); // nefes
-        teachOnce(1,'Tebeşir işareti — kuryenin şüphesi dağıldı.');
+        teachOnce(1,'<b>Tebeşir işareti</b> — kuryenin şüphesi dağıldı.<br>Beyaz işaretler şüphe barını geriletir.');
         fx.rings.push({x:ob.x,y:hostYf(me),r:2,a:0.8});
         SFX.orb();
       }
@@ -1043,7 +1054,7 @@ function update(dt){
       var gh=newHost(gt,camX+W+40);
       gh.gold=true;gh.goldLife=7;
       hosts.push(gh);
-      teachOnce(4,'GÖLGE geçiyor — yetişip fısıldarsan bir süre şüphe işlemez.',4200);
+      teachOnce(4,'<b>GÖLGE</b> geçiyor — efsanevi kurye.<br>Yetişip fısıldarsan bir süre şüphe işlemez. Acele et: bekletmez.');
       beep(520,660,0.14,'sine',0.1); // alçak işaret: Gölge geçiyor
     }
   }
@@ -1144,10 +1155,15 @@ function introNext(){
     introStep===INTRO.length-1?'DOKUN → geceye başla':'DOKUN → devam';
 }
 document.addEventListener('DOMContentLoaded',function(){});
-function teachOnce(bit,msg,dur){ // olay ilk kez yaşandığında tek satır
+function pauseShow(msg){ // dünya donar, oyuncu okuyup dokunur
+  pauseTeach=true;
+  document.getElementById('teachModalText').innerHTML=msg;
+  document.getElementById('teachModal').classList.remove('hidden');
+}
+function teachOnce(bit,msg){ // olay ilk kez yaşandığında: durdur ve anlat
   if(tb&bit)return;
   tb|=bit;saveProgress();
-  teach(msg,dur||3800);
+  pauseShow(msg);
 }
 function teach(msg,dur){
   var el=document.getElementById('teach');
@@ -1788,7 +1804,7 @@ function draw(){
 var last=performance.now();
 function loop(now){
   var dt=Math.min((now-last)/1000,0.033);last=now;
-  if(mode!=='idle'&&!dead&&!won)update(dt);
+  if(mode!=='idle'&&!dead&&!won&&!pauseTeach)update(dt);
   else if(mode==='play'&&won&&!dead)updateFx(dt);
   if(mode==='idle')camX=startX-Math.round(W*0.3)+Math.round(Math.sin(frame*0.004)*10); // menü nefes alır
   draw();
@@ -1834,6 +1850,11 @@ document.getElementById('btnPlay').onclick=function(){
   if(!introSeen){SFX.ui();hideOverlays();showIntro();return;}
   start('play');
 };
+document.getElementById('teachModal').addEventListener('pointerdown',function(){
+  pauseTeach=false;
+  document.getElementById('teachModal').classList.add('hidden');
+  SFX.ui();
+});
 document.getElementById('intro').addEventListener('pointerdown',function(e){
   if(e.target&&e.target.id==='introSkip')return;
   introNext();
