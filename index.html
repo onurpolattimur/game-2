@@ -487,7 +487,7 @@ var curBiome=0,biomeFlashT=0,finalDone=false;
 var recCrossed=false,catFollowT=0;
 var chain=0,hopClutch=false,goldTimer=0,goldPowerT=0,missedGold=false;
 var chainBest=0,runMaxChain=0;
-var soulFree=null,nightsWalked=0,teachT=null,emanetSeen=false;
+var soulFree=null,nightsWalked=0,teachT=null,emanetSeen=false,spotB=null;
 var sealPromptLb=-1,forceStart=false,nightBonus=false;
 var isFinal=false; // son biyomda mıyız (kutsal final)
 var MOM_TH=[3,7,12,17,22,27]; // eve ulaşan an eşikleri: evin geri gelen parçaları
@@ -590,10 +590,10 @@ function reset(){
   hosts.push(newHost('car',spawnX-30));
   hosts.push(newHost('bike',spawnX+30));
   spirit=null;lastHost=null;lastHopT=-9;camX=0;warned=false;
-  fx={lines:[],rings:[],texts:[],puffs:[],finger:null,miss:[],confetti:[],fly:[]};
+  fx={lines:[],rings:[],texts:[],puffs:[],finger:null,miss:[],confetti:[],fly:[],hud:[]};
   arrivalPop=null;
   orbs=[];orbGen=spawnX+120;freshT=0;
-  reviveUsed=false;invulnT=0;
+  reviveUsed=false;invulnT=0;spotB=null;
   t=0;swaps=0;clutch=0;smashed=0;aiCool=0;shake=0;slowT=0;dead=false;truckSeen=false;
 }
 function bagChance(type){
@@ -644,7 +644,7 @@ function hop(target){
   target.st=1;warned=false;
   spirit={fx:me.x,fy:fy,to:target,tt:0,dur:0.16};
   me=null;
-  slowT=0.09;shake=Math.max(shake,2);
+  slowT=0.12;shake=Math.max(shake,2); // devir: mikro duraksama
   swaps++;
   if(target.bag>0){ // dinç beden: tam nefes + kısa süre yorulmaz
     target.bag=0;target.st=1;freshT=2.5;
@@ -779,7 +779,13 @@ function update(dt){
 
   if(spirit){
     spirit.tt+=dt;
-    if(spirit.tt>=spirit.dur){me=spirit.to;spirit=null;SFX.arrive();}
+    if(spirit.tt>=spirit.dur){
+      var ax=spirit.to.x,ay=hostYf(spirit.to);
+      for(var sp2=0;sp2<5;sp2++)fx.confetti.push({ // varış kıvılcımları
+        x:ax+(Math.random()-0.5)*8,y:ay-6,
+        vx:(Math.random()-0.5)*50,vy:-25-Math.random()*25,a:0.9,c:'#F5EFE0'});
+      me=spirit.to;spirit=null;SFX.arrive();
+    }
   }
 
   if(invulnT>0)invulnT-=dt;
@@ -904,6 +910,7 @@ function update(dt){
     for(var bi2=0;bi2<bigMoms.length;bi2++){var bm=bigMoms[bi2];
       if(!bm.got&&bm.lane===laneOf(me)&&Math.abs(bm.x-me.x)<10){
         bm.got=true;carriedIdx.push(bm.idx);
+        fx.hud.push({t:0,x0:bm.x-camX,y0:hostYf(me)-10,slot:Math.min(carriedIdx.length-1,4)});
         slowT=Math.max(slowT,0.18); // an: zaman bir nefes durur
         fx.texts.push({x:bm.x,y:hostYf(me)-16,s:'AD',a:1.3,c:'#FFE9A8'});
         fx.rings.push({x:bm.x,y:hostYf(me),r:3,a:1.3});
@@ -1029,6 +1036,8 @@ function updateFx(dt){
   fx.puffs=fx.puffs.filter(function(p){return p.a>0});
   fx.miss=fx.miss.filter(function(m){return m.a>0});
   if(fx.finger&&fx.finger.a<=0)fx.finger=null;
+  fx.hud.forEach(function(hf){hf.t+=dt;});
+  fx.hud=fx.hud.filter(function(hf){return hf.t<0.5;});
   var blip=0;
   fx.fly.forEach(function(f){
     var was=f.t;f.t+=dt;
@@ -1048,6 +1057,7 @@ function updateFx(dt){
 
 function die(reason){
   dead=true;shake=6;
+  spotB={x:(me?me.x:(lastHost?lastHost.x:camX+W*0.4)),t:0}; // projektör yakalar
   if(me)fx.puffs.push({x:me.x,y:hostYf(me),r:2,a:1});
   SFX.death();
   var dxx=Math.max(startX+40,Math.min((me?me.x:(lastHost?lastHost.x:startX)),goalX-80));
@@ -1321,6 +1331,17 @@ function draw(){
     if((frame>>3)%2===0){ctx.fillStyle='#FF6B5A';ctx.fillRect(hxx,hby-hs*2-1,1,1);}
   }
 
+  // derin gecede yağmur
+  if(TH.name==='DERİN GECE'&&mode!=='idle'){
+    ctx.globalAlpha=0.35;ctx.fillStyle='#8A93A8';
+    for(var rn=0;rn<26;rn++){
+      var rx3=(rn*97+((frame*3+rn*13)%200)- (camX%40|0))%(W+20)-10;
+      var ry4=(rn*61+frame*4)%(H-20);
+      ctx.fillRect(Math.round(rx3),ry4,1,3);
+    }
+    ctx.globalAlpha=1;
+  }
+
   // parallax (tepeler+ağaçlar veya binalar)
   var f1=Math.round((camX*0.25)%W),f2=Math.round((camX*0.5)%W);
   ctx.drawImage(bgFar,-f1,ROAD-56);ctx.drawImage(bgFar,W-f1,ROAD-56);
@@ -1340,6 +1361,23 @@ function draw(){
   ctx.fillStyle=TH.bikeDash;ctx.globalAlpha=0.35;
   for(var bx=-(Math.round(camX)%18);bx<W;bx+=18)ctx.fillRect(bx,H-49,6,1);
   ctx.globalAlpha=1;
+  // sokak lambaları: karartmada loş, kimi bozuk titrer
+  for(var lpx=Math.floor((camX-30)/230)*230;lpx<camX+W+30;lpx+=230){
+    var lsx=Math.round(lpx-camX);
+    var broken=((lpx/230)%3===1); // her üçüncüsü bozuk
+    ctx.fillStyle='#2A2A34';
+    ctx.fillRect(lsx,H-58,2,24);ctx.fillRect(lsx-2,H-58,6,2);
+    var lit=!broken||((frame>>2)%9===0); // bozuk olan ara sıra çakar
+    if(lit){
+      ctx.fillStyle=broken?'#8A93A8':'#C9A15A';
+      ctx.fillRect(lsx-1,H-56,4,2);
+      ctx.globalAlpha=broken?0.06:0.1;ctx.fillStyle='#E8B05A';
+      ctx.fillRect(lsx-7,H-54,16,18); // ışık hüzmesi
+      ctx.globalAlpha=broken?0.08:0.14;
+      ctx.fillRect(lsx-10,H-36,22,6); // kaldırımda havuz
+      ctx.globalAlpha=1;
+    }
+  }
   // kaldırım / çim
   ctx.fillStyle=TH.side;ctx.fillRect(0,H-36,W,30);
   ctx.fillStyle=TH.sideEdge;ctx.fillRect(0,H-36,W,2);
@@ -1470,6 +1508,11 @@ function draw(){
     if(h.pale)ctx.globalAlpha=0.45;
     blit(hostSprite(h),sx,hostYf(h));
     if(h.pale){ctx.globalAlpha=1;return;}
+    if((h.type==='car'||h.type==='truck')&&((frame+Math.round(h.x))%3===0)){
+      ctx.globalAlpha=0.35;ctx.fillStyle='#6A7390'; // egzoz
+      ctx.fillRect(Math.round(sx)-hostHalf(h)-3,hostYf(h)+2,2,1);
+      ctx.globalAlpha=1;
+    }
     if(h.gold){ // GÖLGE: efsanevi kurye, soluk bir hale
       var gr=6+((frame>>2)%4);
       pixelRing(sx,hostYf(h),gr,'#B4DEF4',0.55);
@@ -1536,6 +1579,14 @@ function draw(){
     var f=spirit.tt/spirit.dur;
     var sx=spirit.fx+(spirit.to.x-spirit.fx)*f-camX;
     var sy=spirit.fy+(hostYf(spirit.to)-spirit.fy)*f;
+    for(var gh=1;gh<=2;gh++){ // hayalet iz
+      var gf=Math.max(0,f-gh*0.18);
+      var gx=spirit.fx+(spirit.to.x-spirit.fx)*gf-camX;
+      var gy2=spirit.fy+(hostYf(spirit.to)-spirit.fy)*gf;
+      ctx.globalAlpha=0.35/gh;
+      ctx.fillStyle='#F5EFE0';ctx.fillRect(Math.round(gx)-1,Math.round(gy2)-1,3,2);
+      ctx.globalAlpha=1;
+    }
     drawNote(Math.round(sx),Math.round(sy));
     ctx.globalAlpha=0.5;ctx.fillStyle='#F5EFE0';
     ctx.fillRect(Math.round(sx)-4,Math.round(sy),1,1);
@@ -1556,6 +1607,13 @@ function draw(){
       }
     }
   }
+  fx.hud.forEach(function(hf){ // zarf koleksiyona süzülür
+    var hp=Math.min(hf.t/0.45,1);hp=hp*hp*(3-2*hp);
+    var hxx2=hf.x0+((7+hf.slot*7)-hf.x0)*hp;
+    var hyy2=hf.y0+(40-hf.y0)*hp-Math.sin(hp*Math.PI)*14;
+    ctx.fillStyle='#F5EFE0';ctx.fillRect(Math.round(hxx2)-2,Math.round(hyy2)-1,5,4);
+    ctx.fillStyle='#C9C0A4';ctx.fillRect(Math.round(hxx2),Math.round(hyy2),1,1);
+  });
   fx.fly.forEach(function(f){
     if(f.t<0)return;
     var fp=Math.min(f.t/0.5,1);
@@ -1581,6 +1639,18 @@ function draw(){
     ctx.fillRect(Math.round(c.x-camX),Math.round(c.y),2,2);
   });
   ctx.globalAlpha=1;
+  if(dead&&spotB){ // projektör: yakalanma anı
+    var spx=Math.round(spotB.x-camX);
+    var topW=6,botW=26,by3=H-10;
+    ctx.globalAlpha=0.16;ctx.fillStyle='#DDE8F5';
+    for(var ry3=0;ry3<by3;ry3+=2){
+      var w3=topW+(botW-topW)*(ry3/by3);
+      ctx.fillRect(Math.round(spx-w3/2+((frame>>4)%2?1:0)),ry3,Math.round(w3),2);
+    }
+    ctx.globalAlpha=0.3;
+    ctx.fillRect(spx-13,by3-2,26,3);
+    ctx.globalAlpha=1;
+  }
   if(fx.finger){ // hedef oku: bu kuryeye dokun
     ctx.globalAlpha=Math.max(fx.finger.a,0);
     var agx=Math.round(fx.finger.x-camX),agy=Math.round(fx.finger.y)-14+(((frame>>3)%2===0)?0:2);
@@ -1635,7 +1705,7 @@ function loop(now){
   var dt=Math.min((now-last)/1000,0.033);last=now;
   if(mode!=='idle'&&!dead&&!won)update(dt);
   else if(mode==='play'&&won&&!dead)updateFx(dt);
-  if(mode==='idle')camX=startX-Math.round(W*0.3);
+  if(mode==='idle')camX=startX-Math.round(W*0.3)+Math.round(Math.sin(frame*0.004)*10); // menü nefes alır
   draw();
   requestAnimationFrame(loop);
 }
