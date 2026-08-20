@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>RUH KOŞUCUSU — Eve Dön</title>
+<title>FISILTI — Şafakta Yayın</title>
 <style>
   :root{ --ink:#0B0E1A; --cream:#F5EFE0; --teal:#5FD3C4; --red:#FF4D5A; --mut:#7A8199; }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -56,26 +56,26 @@
   </div>
 
   <div class="overlay" id="menu">
-    <h1>RUH<span> </span>KOŞUCUSU</h1>
-    <div class="tag"><b>Her gece aynı yol: evine dönmeye çalışan bir ruhsun.</b><br>
-    Bir bedene dokun → ona geçersin. Işıklar nefestir, bedeni tazeler.<br>
-    Beden düşerse gece biter — yarın gece yeniden. Yol hatırlar.</div>
+    <h1>FISIL<span>TI</span></h1>
+    <div class="tag"><b>Şehir işgal altında. Sen bir mesajsın.</b><br>
+    Bir kuryeye dokun → sana o fısıldar. Tebeşir işaretleri şüpheyi dağıtır.<br>
+    Kurye yakalanırsa gece biter — yarın gece başka ağızlar dener. Şehir hatırlar.</div>
     <div class="legend">
-      <span><i style="background:#9AA2BC"></i>kuş→direk</span>
-      <span><i style="background:#5A8BC4"></i>araba→bariyer</span>
-      <span><i style="background:#F2A65A"></i>bisiklet→çukur</span>
-      <span><i style="background:#5FD3C4"></i>koşucu→koni</span>
-      <span><i style="background:#8B95B5"></i>kamyon→ezer</span>
+      <span><i style="background:#9AA2BC"></i>güvercin→tel devriyesi</span>
+      <span><i style="background:#5A8BC4"></i>otomobil→kontrol noktası</span>
+      <span><i style="background:#F2A65A"></i>bisikletli→nöbetçi</span>
+      <span><i style="background:#5FD3C4"></i>yaya→devriye</span>
+      <span><i style="background:#8B95B5"></i>kamyon→barikatı yarar</span>
     </div>
     <button class="btn primary" id="btnPlay">LEVEL 1 — YOLA ÇIK</button>
     <div class="small" style="color:#F7C566" id="menuBank"></div>
     <button id="btnReset" style="font-family:inherit;font-size:9px;letter-spacing:.1em;background:none;border:none;color:#7A8199;cursor:pointer;text-decoration:underline;padding:4px">İLERLEMEYİ SIFIRLA</button>
-    <div class="small">sabah → günbatımı → gece → şafak</div>
+    <div class="small">karartma → gece → derin gece → şafakta yayın</div>
   </div>
 
   <div class="overlay hidden" id="win">
     <h2 id="winTitle">EVDESİN!</h2>
-    <div class="small">EVE GİDEN AN</div>
+    <div class="small">YAYINLANAN İSİM</div>
     <div id="winScore">0</div>
     <div class="tag" id="winStats"></div>
     <button class="btn primary" id="btnNext">YENİDEN YÜRÜ</button>
@@ -86,7 +86,7 @@
     <div class="small" id="deathReason">SKOR</div>
     <div id="deathScore">0</div>
     <div class="tag" id="deathStats"></div>
-    <button class="btn" id="btnRevive" style="border-color:#5FD3C4;color:#5FD3C4">▶ BİRİ SENİ HATIRLADI — GERİ DÖN</button>
+    <button class="btn" id="btnRevive" style="border-color:#5FD3C4;color:#5FD3C4">▶ BİR TANIK SENİ SAKLIYOR — DEVAM ET</button>
     <button class="btn primary" id="btnAgain">YENİ GECE</button>
     <button class="btn" id="btnFromStart" style="display:none;font-size:10px">BAŞTAN YÜRÜ</button>
     <button class="btn" id="btnMenu2">MENÜ</button>
@@ -95,7 +95,7 @@
   <div class="overlay hidden" id="ad">
     <div class="small">REKLAM (SİMÜLASYON)</div>
     <h2 id="adCount">3</h2>
-    <div class="tag">Gerçek oyunda buraya rewarded ad gelir.</div>
+    <div class="tag">Kapı aralanıyor, devriye geçene kadar beklersin. (Gerçek oyunda rewarded ad.)</div>
   </div>
 </div></div>
 
@@ -107,33 +107,33 @@ var W=240,H=160;
 
 // ---------- TEMALAR ----------
 var THEMES=[
- { name:'GÜNDÜZ PARK', stars:false, clouds:true, celestial:'sun', hills:true,
+ { name:'KARARTMA', stars:false, clouds:true, celestial:'sunset', hills:false,
    seq:[147,0,165,0,131,0,196,165],
-   sky:['#6FBBE8','#8FCCEE','#B4DEF4'],
-   farCol:'#6FA85E', nearGround:'#4E8F4A',
-   road:'#3E464F', roadEdge:'#5A6470', dash:'#F5EFE0',
-   bike:'#37424B', bikeDash:'#F2A65A',
-   side:'#5C9A4E', sideEdge:'#4A7A3E', seam:'#4E8442',
-   bottom:'#3E5A32', wire:'#5A6470' },
- { name:'GÜNBATIMI', stars:false, clouds:true, celestial:'sunset', hills:false,
+   sky:['#46516B','#566179','#66718A'],
+   farCol:'#232B3F', nearCol:'#1B2231', winCol:'#C9A15A',
+   road:'#262C3A', roadEdge:'#3E4658', dash:'#8A93A8',
+   bike:'#202634', bikeDash:'#8A93A8',
+   side:'#2E3646', sideEdge:'#3E4658', seam:'#28303E',
+   bottom:'#141A26', wire:'#3E4658' },
+ { name:'GECE', stars:true, clouds:false, celestial:'moon', hills:false,
    seq:[123,0,147,0,110,0,165,147],
-   sky:['#3A2A5E','#8E4A6E','#D8785A'],
-   farCol:'#3A2A50', nearCol:'#2A1F42', winCol:'#F7C566',
-   road:'#2C2438', roadEdge:'#4A3C5C', dash:'#F5D9B0',
-   bike:'#332B44', bikeDash:'#5FD3C4',
-   side:'#3E3352', sideEdge:'#544468', seam:'#483C5E',
-   bottom:'#1E1830', wire:'#4A3C5C' },
- { name:'GECE ŞEHİR', stars:true, clouds:false, celestial:'moon', hills:false,
    sky:['#171132','#121430','#0E132B'],
-   farCol:'#10142A', nearCol:'#151B33', winCol:'#F7C566',
-   road:'#1A1F33', roadEdge:'#3A4468', dash:'#F5EFE0',
-   bike:'#1D2438', bikeDash:'#5FD3C4',
+   farCol:'#10142A', nearCol:'#151B33', winCol:'#C9A15A',
+   road:'#1A1F33', roadEdge:'#3A4468', dash:'#8A93A8',
+   bike:'#1D2438', bikeDash:'#4A8AA8',
    side:'#232B47', sideEdge:'#3A4468', seam:'#2E3752',
-   bottom:'#0A0D18', wire:'#3A4468' }
+   bottom:'#0A0D18', wire:'#3A4468' },
+ { name:'DERİN GECE', stars:true, clouds:false, celestial:'moon', hills:false,
+   sky:['#0B0E1E','#090C19','#070A15'],
+   farCol:'#0B0F1D', nearCol:'#0F1424', winCol:'#8A93A8',
+   road:'#12172A', roadEdge:'#2A3350', dash:'#6A7390',
+   bike:'#141A2C', bikeDash:'#4A8AA8',
+   side:'#1A2138', sideEdge:'#2A3350', seam:'#20283C',
+   bottom:'#070A12', wire:'#2A3350' }
 ];
-var DAWN={ name:'ŞAFAK', stars:false, clouds:true, celestial:'sun', hills:true,
+var DAWN={ name:'ŞAFAK', stars:false, clouds:true, celestial:'sun', hills:false,
   sky:['#F5C6A0','#F8DCC0','#FBEDD8'],
-  farCol:'#C98D6B', nearGround:'#D9A878',
+  farCol:'#8A7060', nearCol:'#9A8070', winCol:'#FFF6E5',
   road:'#8A7A6E', roadEdge:'#B0988A', dash:'#FFF6E5',
   bike:'#7A6A5E', bikeDash:'#F2A65A',
   side:'#C9A878', sideEdge:'#A8885E', seam:'#B8986A',
@@ -372,7 +372,7 @@ var SFX={
   smash:function(){noiseS(0.2,0.28,520);beep(95,38,0.2,'sawtooth',0.2);vib(25);},
   clutch:function(){beep(880,880,0.07,'square',0.18);beep(1318,1318,0.1,'square',0.18,AC?AC.currentTime+0.08:0);},
   tired:function(){beep(260,180,0.09,'square',0.12);beep(260,180,0.09,'square',0.12,AC?AC.currentTime+0.12:0);},
-  death:function(){noiseS(0.35,0.3,700);beep(420,55,0.45,'sawtooth',0.26);vib(90);},
+  death:function(){beep(2200,1500,0.3,'square',0.12);noiseS(0.3,0.22,700);beep(300,50,0.4,'sawtooth',0.2,AC?AC.currentTime+0.12:0);vib(90);}, // devriye düdüğü + karartma
   win:function(){
     if(!AC)return;
     var t0=AC.currentTime;
@@ -382,11 +382,11 @@ var SFX={
     beep(1046,1046,0.28,'square',0.22,t0+0.39);
     vib(40);
   },
-  orb:function(){beep(1240,1560,0.06,'triangle',0.12);},
+  orb:function(){beep(1400,1400,0.045,'square',0.09);}, // mors: dit
   revive:function(){beep(392,392,0.12,'triangle',0.2);beep(523,523,0.18,'triangle',0.2,AC?AC.currentTime+0.12:0);},
   miss:function(){beep(210,140,0.06,'triangle',0.1);},
   ui:function(){beep(660,660,0.05,'square',0.13);},
-  chainUp:function(c){beep(620+c*150,620+c*150,0.09,'triangle',0.15);},
+  chainUp:function(c){beep(900+c*180,900+c*180,0.05,'square',0.12);beep(900+c*180,900+c*180,0.05,'square',0.1,AC?AC.currentTime+0.08:0);}, // mors: di-dit
   exhale:function(){noiseS(0.28,0.07,1100);beep(340,180,0.3,'sine',0.07);}
 };
 function vib(ms){if(navigator.vibrate)try{navigator.vibrate(ms);}catch(e){}}
@@ -431,16 +431,16 @@ var level=1;
 // ---------- GÜZERGÂH ----------
 // Oyun tek bir yolculuk: memleketten eve, bir gün-bir gece. Eve BİR kez varılır.
 var ROUTE=[
- {th:0,dist:420, mul:0.72,gap:280,drain:0,   truck:0,   bagMul:1,  name:'Sabah — park yolu',label:'PARK'},
- {th:0,dist:560, mul:0.78,gap:250,drain:0.3, truck:0,   bagMul:1,  name:'Öğle — koru',label:'KORU'},
- {th:0,dist:700, mul:0.84,gap:230,drain:0.45,truck:0.12,bagMul:1,  name:'İkindi — şehir sınırı',label:'YOL'},
- {th:1,dist:800, mul:0.9, gap:215,drain:0.55,truck:0.12,bagMul:1,  name:'Günbatımı — anayol',label:'ANAYOL'},
- {th:1,dist:900, mul:0.95,gap:205,drain:0.65,truck:0.3, bagMul:1,  name:'Alacakaranlık — konvoy',label:'KONVOY'},
- {th:1,dist:980, mul:1.0, gap:195,drain:0.75,truck:0.15,bagMul:1.6,name:'Akşam — pazar yeri',label:'FENER'},
- {th:2,dist:1060,mul:1.06,gap:185,drain:0.85,truck:0.15,bagMul:1,  name:'Gece — şehir',label:'NEON'},
- {th:2,dist:1140,mul:1.12,gap:175,drain:0.95,truck:0.2, bagMul:1,  name:'Gece yarısı — ışıklar',label:'AY'},
- {th:2,dist:1220,mul:1.18,gap:165,drain:1.05,truck:0.2, bagMul:1.3,name:'Derin gece — son karanlık',label:'SON YOL'},
- {th:3,dist:520, mul:0.85,gap:240,drain:0,   truck:0.1, bagMul:1.5,name:'Şafak — ev',label:'SAFAK'}
+ {th:0,dist:420, mul:0.72,gap:280,drain:0,   truck:0,   bagMul:1,  name:'Karartma — kenar mahalle',label:'KENAR'},
+ {th:0,dist:560, mul:0.78,gap:250,drain:0.3, truck:0,   bagMul:1,  name:'Karartma — arka sokaklar',label:'SOKAK'},
+ {th:0,dist:700, mul:0.84,gap:230,drain:0.45,truck:0.12,bagMul:1,  name:'Karartma — depo bölgesi',label:'DEPO'},
+ {th:1,dist:800, mul:0.9, gap:215,drain:0.55,truck:0.12,bagMul:1,  name:'Gece — meydan',label:'MEYDAN'},
+ {th:1,dist:900, mul:0.95,gap:205,drain:0.65,truck:0.3, bagMul:1,  name:'Gece — devriye konvoyu',label:'KONVOY'},
+ {th:1,dist:980, mul:1.0, gap:195,drain:0.75,truck:0.15,bagMul:1.6,name:'Gece — gar',label:'GAR'},
+ {th:2,dist:1060,mul:1.06,gap:185,drain:0.85,truck:0.15,bagMul:1,  name:'Derin gece — köprü',label:'KOPRU'},
+ {th:2,dist:1140,mul:1.12,gap:175,drain:0.95,truck:0.2, bagMul:1,  name:'Derin gece — yasak bölge',label:'YASAK'},
+ {th:2,dist:1220,mul:1.18,gap:165,drain:1.05,truck:0.2, bagMul:1.3,name:'Derin gece — son sokak',label:'SON SOKAK'},
+ {th:3,dist:520, mul:0.85,gap:240,drain:0,   truck:0.1, bagMul:1.5,name:'Şafak — radyo',label:'RADYO'}
 ];
 var STAGES=ROUTE.length;
 var BND=[];(function(){var a=0;for(var i=0;i<STAGES;i++){a+=ROUTE[i].dist;BND[i]=a;}})();
@@ -486,13 +486,13 @@ var soulFree=null,nightsWalked=0,teachT=null,emanetSeen=false;
 var sealPromptLb=-1,forceStart=false,nightBonus=false;
 var isFinal=false; // son biyomda mıyız (kutsal final)
 var MOM_TH=[3,7,12,17,22,27]; // eve ulaşan an eşikleri: evin geri gelen parçaları
-var HOUSE_MEMS=[
- 'Çiti hatırladın — bahçenin sınırı geri geldi.',
- 'Çiçekleri hatırladın — yol yeniden eve çıkıyor.',
- 'Kediyi hatırladın — biri seni bekliyor.',
- 'Işıkları hatırladın — pencereler yeniden sıcak.',
- 'Ağacı hatırladın — gölgesi avluya düştü.',
- 'Her şeyi hatırladın — şafak seni çağırıyor.'];
+var HOUSE_MEMS=[ // radyo evi sıradan bir ev gibi görünmeli: her parça kamuflaj
+ 'Çevreye çit çekildi — radyo evi artık göze batmıyor.',
+ 'Bahçeye çiçek ekildi — sıradan bir ev işte, kimse bakmaz.',
+ 'Köpek kapıya yerleşti — gelenleri o karşılıyor.',
+ 'Çatı ışıkları yandı — kuryeler yolu uzaktan tanıyor.',
+ 'Ağaç büyüdü — anten teli dalların arasında görünmez.',
+ 'Büyük anten kuruldu — şafakta bütün şehir duyacak.'];
 function houseTier(){
   var t=0;
   for(var i=0;i<MOM_TH.length;i++)if(momsHome>=MOM_TH[i])t++;
@@ -500,7 +500,7 @@ function houseTier(){
 }
 
 // ---------- kayıt (localStorage) ----------
-var SAVE_KEY='ruhkosucusu.save.v3';
+var SAVE_KEY='fisilti.save.v1';
 var bestRel=0;      // rekor: yol başından en uzak nokta
 var momsHome=0;     // eve ulaşan anlar
 var spotsGone={};   // eve gitmiş an noktaları (bir daha doğmaz)
@@ -509,10 +509,10 @@ var flowers=[]; // düşülen yerlerde açan çiçekler (rel listesi)
 var anmaWalk=false; // azat sonrası yürüyüş: dünya seni geçiyor
 var seals=[];       // mühürlü fenerler (biyom sınır indeksleri)
 var GIFTS={ // yolun hediyeleri: sınırı GEÇMEKLE açılır, kalıcı
- 2:'Koru seni tanıdı — bedenler geç yorulur.',
- 4:'Anayol cömerttir — dinç bedenler daha sık çıkar.',
- 6:'Pazar yerinin ışığı — nefesler daha güçlü, daha yakından çeker.',
- 8:'Ay seni gördü — fenerler geçerken nefes verir.'};
+ 2:'Arka sokaklar seni tanıdı — kuryeler geç şüphelenir.',
+ 4:'Meydanın gözü kulağı — gönüllü kuryeler daha sık çıkar.',
+ 6:'Garın tebeşirleri — işaretler daha güçlü, daha yakından çeker.',
+ 8:'Yasak bölge ezberlendi — güvenli evler geçerken şüpheyi sıfırlar.'};
 function giftOn(n){return bestRel>=BND[n-1];}
 function sealCost(){ // ilk emanet ucuz, derine yerleşmek daha çok an ister
   if(seals.length===0&&nightsWalked<=3)return 1;
@@ -785,7 +785,7 @@ function update(dt){
   if(LV.drainMul>0&&me&&!spirit&&freshT<=0){
     me.st-=DRAIN[me.type]*LV.drainMul*d*(giftOn(2)?0.85:1)*(anmaWalk?1.3:1); // koru + anma
     if(me.st<0.3&&!warned){warned=true;SFX.tired();}
-    if(me.st<=0){die('BEDEN TÜKENDİ');return;}
+    if(me.st<=0){die('DEŞİFRE OLDU');return;}
   }
 
   for(var i=hosts.length-1;i>=0;i--){var h=hosts[i];
@@ -806,7 +806,7 @@ function update(dt){
               if(chain>runMaxChain)runMaxChain=chain;
               SFX.chainUp(chain); // her adımda perdesi yükselen çan
               if(me)me.st=Math.min(1,me.st+0.3); // beden son nefesini sana verir
-              fx.texts.push({x:h.x,y:hostYf(h)-14,s:'SON AN',a:1,c:'#5FD3C4'});
+              fx.texts.push({x:h.x,y:hostYf(h)-14,s:'SON ANDA',a:1,c:'#5FD3C4'});
               slowT=0.22;
               fx.rings.push({x:h.x,y:hostYf(h),r:2,a:1.2});
               SFX.clutch();
@@ -814,7 +814,7 @@ function update(dt){
                 chain=0;
                 var anx=(me?me.x:h.x)+140;
                 bigMoms.push({x:anx,lane:LANES[Math.floor(Math.random()*4)],got:false,idx:-1});
-                fx.texts.push({x:h.x,y:hostYf(h)-24,s:'AN',a:1.4,c:'#FFE9A8'});
+                fx.texts.push({x:h.x,y:hostYf(h)-24,s:'AD',a:1.4,c:'#FFE9A8'});
                 SFX.win();
               }
             } else if(h===lastHost&&(t-lastHopT)<1.2){ // az kaldı (cezasız)
@@ -849,7 +849,7 @@ function update(dt){
             smashed++;shake=Math.max(shake,4);
             SFX.smash();
             a.splice(j,1);
-          } else {die('ÇARPTIN');return;}
+          } else {die('YAKALANDIN');return;}
         }
       }
     }
@@ -871,10 +871,10 @@ function update(dt){
         saveProgress();
         for(var fi2=0;fi2<Math.min(sent,8);fi2++)
           fx.fly.push({t:-fi2*0.12,x0:lx-6-Math.random()*10,y0:H-40-Math.random()*20});
-        fx.texts.push({x:lx,y:yRunner()-34,s:'EV',a:1.3,c:'#FFE9A8'});
+        fx.texts.push({x:lx,y:yRunner()-34,s:'RADYO',a:1.3,c:'#FFE9A8'});
         SFX.orb();
       }
-      if(giftOn(8)){me.st=1;fx.texts.push({x:lx,y:yRunner()-42,s:'NEFES',a:1.1,c:'#FFE9A8'});}
+      if(giftOn(8)){me.st=1;fx.texts.push({x:lx,y:yRunner()-42,s:'GUVEN',a:1.1,c:'#FFE9A8'});}
       curBiome=nb;level=curBiome+1;isFinal=(curBiome===STAGES-1);
       LV=routeParams(level);
       TH=LV.th===3?DAWN:THEMES[LV.th];
@@ -893,21 +893,21 @@ function update(dt){
       }
       if(sealPromptLb>=0&&!emanetSeen){ // bedelin bilgisi bir kez, nötr
         emanetSeen=true;saveProgress();
-        teach('Fenere dokun: '+sealCost()+' an burada yaşar, gece buradan başlar. Dokunmazsan anlar eve gider.',5200);
+        teach('Zulaya dokun: '+sealCost()+' isim burada saklanır, gece buradan başlar. Dokunmazsan isimler radyoya gider.',5200);
       }
     }
     for(var bi2=0;bi2<bigMoms.length;bi2++){var bm=bigMoms[bi2];
       if(!bm.got&&bm.lane===laneOf(me)&&Math.abs(bm.x-me.x)<10){
         bm.got=true;carriedIdx.push(bm.idx);
         slowT=Math.max(slowT,0.18); // an: zaman bir nefes durur
-        fx.texts.push({x:bm.x,y:hostYf(me)-16,s:'AN',a:1.3,c:'#FFE9A8'});
+        fx.texts.push({x:bm.x,y:hostYf(me)-16,s:'AD',a:1.3,c:'#FFE9A8'});
         fx.rings.push({x:bm.x,y:hostYf(me),r:3,a:1.3});
         SFX.clutch();
       }
     }
     if(dropPile&&Math.abs(me.x-dropPile.x)<10){ // bekleyen anların kavuşması
       for(var pi2=0;pi2<dropPile.idxs.length;pi2++)carriedIdx.push(dropPile.idxs[pi2]);
-      fx.texts.push({x:me.x,y:hostYf(me)-16,s:'+'+dropPile.idxs.length+' AN',a:1.3,c:'#FFE9A8'});
+      fx.texts.push({x:me.x,y:hostYf(me)-16,s:'+'+dropPile.idxs.length+' AD',a:1.3,c:'#FFE9A8'});
       fx.rings.push({x:dropPile.x,y:yRunner()-8,r:3,a:1});
       SFX.clutch();dropPile=null;savedPile=null;saveProgress();
     }
@@ -992,7 +992,7 @@ function update(dt){
       var gh=newHost(gt,camX+W+40);
       gh.gold=true;gh.goldLife=7;
       hosts.push(gh);
-      beep(880,1320,0.18,'triangle',0.13); // yumuşak çan: yolun misafiri
+      beep(520,660,0.14,'sine',0.1); // alçak işaret: Gölge geçiyor
     }
   }
   if(Math.random()<d*0.8 && camX+W+60<goalX-40){
@@ -1055,15 +1055,15 @@ function die(reason){
   document.getElementById('deathScore').textContent=
     newRec?'YENİ REKOR':
     (newChain&&runMaxChain>=2?'ZİNCİR ×'+runMaxChain:
-     'EVE '+Math.round(goalX-dxx)+' VARDI');
+     'RADYOYA '+Math.round(goalX-dxx)+' VARDI');
   document.getElementById('deathStats').innerHTML=
-    'kedi seni bekliyor — yol hatırlıyor<br>'+
+    'köpek seni bekliyor — şehir hatırlıyor<br>'+
     (newRec?'<b style="color:#FFE9A8">+'+Math.round(rel-bestRel)+' daha ileri gittin</b>':
       'rekoruna <b style="color:#FFE9A8">'+Math.round(bestRel-rel)+'</b> kalmıştı')+
-    (newChain&&runMaxChain>=2&&newRec?'<br><b style="color:#5FD3C4">son nefes zincirin ×'+runMaxChain+' — en uzunu</b>':'')+
-    '<br>'+swaps+' beden · '+clutch+' son an · '+smashed+' ezme'+
-    (carriedIdx.length?'<br><b style="color:#FFE9A8">'+carriedIdx.length+' an yolda bekleyecek</b>':'')+
-    (missedGold?'<br><b style="color:#F7C566">altın misafir kaçtı — belki yarın gece</b>':'');
+    (newChain&&runMaxChain>=2&&newRec?'<br><b style="color:#5FD3C4">devir zincirin ×'+runMaxChain+' — en uzunu</b>':'')+
+    '<br>'+swaps+' kurye · '+clutch+' son anda devir · '+smashed+' barikat'+
+    (carriedIdx.length?'<br><b style="color:#FFE9A8">'+carriedIdx.length+' isim duvar çatlağında saklanacak</b>':'')+
+    (missedGold?'<br><b style="color:#F7C566">Gölge geçti, yetişemedin — belki yarın gece</b>':'');
   document.getElementById('btnRevive').style.display=(reviveUsed||mode==='auto')?'none':'block';
   document.getElementById('btnFromStart').style.display=seals.length?'block':'none';
   setTimeout(function(){document.getElementById('death').classList.remove('hidden');},450);
@@ -1107,13 +1107,13 @@ function winLevel(){
       fx.fly.push({t:-fi*0.15,x0:goalX-14-Math.random()*14,y0:H-46-Math.random()*20});
   }
   if(houseTier()>tierBefore)arrivalPop={t:0,done:false};
-  document.getElementById('winTitle').textContent='EVDESİN.';
+  document.getElementById('winTitle').textContent='YAYINDAYIZ.';
   document.getElementById('winScore').textContent=''+momsHome;
   document.getElementById('winStats').innerHTML=
-    'Kaç gece sürdü, kim bilir — ve kapı açıldı. Ruh huzura erdi.<br>'+
-    swaps+' beden · '+clutch+' son an'+
+    'Kaç gece sürdü, kim bilir — ve şafakta radyo konuştu. Şehir duydu.<br>'+
+    swaps+' kurye · '+clutch+' son anda devir'+
     (houseTier()>tierBefore?'<br><b style="color:#5FD3C4">'+HOUSE_MEMS[houseTier()-1]+'</b>':'')+
-    '<br><span style="color:#7A8199">Yeniden yürürsen yol sıfırlanır; ev ve anıların kalır.</span>';
+    '<br><span style="color:#7A8199">Yeniden yürürsen yol sıfırlanır; yayınlanan isimler kalır.</span>';
   setTimeout(function(){
     document.getElementById('win').classList.remove('hidden');
   },1600);
@@ -1148,12 +1148,17 @@ function hostSprite(h){
   var fr=getFrames(h);
   return (Math.floor(h.anim)%2===0)?fr.A:fr.B;
 }
-function drawCat(sx,gy,hop){
+function drawCat(sx,gy,hop){ // postacı köpek: direnişin dört ayaklı kuryesi
   var ch=hop?1:0;
+  ctx.fillStyle='#4A3B2E';
+  ctx.fillRect(sx,gy-5-ch,6,4);
+  ctx.fillRect(sx+5,gy-7-ch,3,3);
+  ctx.fillRect(sx+7,gy-8-ch,1,2);
+  ctx.fillRect(sx-1,gy-7-ch,1,3);
+  ctx.fillStyle='#F5EFE0';
+  ctx.fillRect(sx+7,gy-5-ch,1,1);
   ctx.fillStyle='#241C2E';
-  ctx.fillRect(sx,gy-5-ch,5,4);
-  ctx.fillRect(sx,gy-7-ch,2,2);ctx.fillRect(sx+3,gy-7-ch,2,2);
-  ctx.fillRect(sx+5,gy-4-ch,((frame>>4)%2===0)?3:2,1);
+  ctx.fillRect(sx+6,gy-6-ch,1,1);
 }
 function drawRest(sx,sealed){ // yol feneri; mühürlüyse emanet anlar döner
   var gy=H-6;
@@ -1190,7 +1195,9 @@ function drawHouse(sx){
   ctx.fillRect(sx+5,gy-26,5,5);
   ctx.fillRect(sx-2,gy-11,4,3);
   ctx.fillStyle='#4A2F1C';
-  ctx.fillRect(sx+6,gy-46,4,8);
+  ctx.fillRect(sx+6,gy-54,1,16);
+  ctx.fillRect(sx+4,gy-48,5,1);
+  if((frame>>3)%2===0){ctx.fillStyle='#FF6B5A';ctx.fillRect(sx+6,gy-55,1,1);}
   var tier=houseTier();
   if(tier>=1){ // çit
     ctx.fillStyle='#D8CDB2';
@@ -1229,7 +1236,7 @@ function drawHouse(sx){
     ctx.fillStyle='#D8CDB2';ctx.fillRect(sx-7,gy-49,1,6);
     ctx.fillStyle='#5FD3C4';ctx.fillRect(sx-6,gy-49,4,2);ctx.fillRect(sx-6,gy-47,2,1);
   }
-  drawText('EV',Math.round(sx-textW('EV',1)/2),gy-52,'#5FD3C4',1);
+  drawText('RADYO',Math.round(sx-textW('RADYO',1)/2),gy-60,'#5FD3C4',1);
 }
 
 // ---------- çizim ----------
@@ -1284,17 +1291,15 @@ function draw(){
     ctx.globalAlpha=1;
   }
 
-  // ufukta ev: her etapta yaklaşır, sadece finalde sahneye iner
+  // ufukta radyo kulesi: her semtte yaklaşır, tepe ışığı gecede yanıp söner
   if(curBiome<STAGES-1){
     var hs=1+Math.round(curBiome*0.6);
     var hxx=Math.round(W*0.78),hby=ROAD-55;
     ctx.fillStyle=TH.farCol;
-    ctx.fillRect(hxx-hs,hby-hs,hs*2,hs);
-    for(var ri=0;ri<hs;ri++)ctx.fillRect(hxx-hs+ri,hby-hs-1-ri,(hs-ri)*2,1);
-    if(level>=4){ // akşamdan itibaren pencere yanar: gecede evi ışığından tanırsın
-      ctx.fillStyle=((frame>>4)%2===0)?'#FFE9A8':'#F7C566';
-      ctx.fillRect(hxx,hby-Math.max(1,hs>>1),Math.max(1,hs>>2),2);
-    }
+    ctx.fillRect(hxx-hs,hby-1,hs*2,2);
+    ctx.fillRect(hxx,hby-hs*2,1,hs*2);
+    if(hs>2)ctx.fillRect(hxx-1,hby-hs,3,1);
+    if((frame>>3)%2===0){ctx.fillStyle='#FF6B5A';ctx.fillRect(hxx,hby-hs*2-1,1,1);}
   }
 
   // parallax (tepeler+ağaçlar veya binalar)
@@ -1325,14 +1330,15 @@ function draw(){
 
   var hx=goalX-camX;
   if(hx>-30&&hx<W+30)drawHouse(Math.round(hx));
-  if(mode!=='idle')for(var fw=0;fw<flowers.length;fw++){ // gecelerin izleri
+  if(mode!=='idle')for(var fw=0;fw<flowers.length;fw++){ // gecelerin izleri: tebeşir V'leri
     var fwx=Math.round(startX+flowers[fw]-camX);
     if(fwx<-4||fwx>W+4)continue;
-    var fgy2=H-7;
-    ctx.fillStyle='#5FA85A';ctx.fillRect(fwx,fgy2-2,1,2);
-    ctx.fillStyle=(fw%2===0)?'#FF9EB5':'#F7C566';
-    ctx.fillRect(fwx-1,fgy2-4,3,2);
-    ctx.fillStyle='#F5EFE0';ctx.fillRect(fwx,fgy2-4,1,1);
+    var fgy2=H-9;
+    ctx.globalAlpha=0.85;ctx.fillStyle='#F5EFE0';
+    ctx.fillRect(fwx-2,fgy2-4,1,2);ctx.fillRect(fwx+2,fgy2-4,1,2);
+    ctx.fillRect(fwx-1,fgy2-2,1,1);ctx.fillRect(fwx+1,fgy2-2,1,1);
+    ctx.fillRect(fwx,fgy2-1,1,1);
+    ctx.globalAlpha=1;
   }
   for(var lb=0;lb<STAGES-1;lb++){ // biyom fenerleri
     var lxx=startX+BND[lb]-camX;
@@ -1343,7 +1349,7 @@ function draw(){
           drawText('EMANET',Math.round(lxx-textW('EMANET',1)/2),H-44,'#FFE9A8',1);
           pixelRing(lxx,H-30,9,'#FFE9A8',0.5);
         }
-        drawText('EVE',Math.round(lxx)+14,H-44,'#5FD3C4',1);
+        drawText('RADYO',Math.round(lxx)+14,H-44,'#5FD3C4',1);
         ctx.fillStyle='#5FD3C4';
         ctx.fillRect(Math.round(lxx)+28,H-41,4,1);
         ctx.fillRect(Math.round(lxx)+31,H-42,1,3);
@@ -1439,12 +1445,12 @@ function draw(){
     if(h.pale)ctx.globalAlpha=0.45;
     blit(hostSprite(h),sx,hostYf(h));
     if(h.pale){ctx.globalAlpha=1;return;}
-    if(h.gold){ // altın misafir: aura
+    if(h.gold){ // GÖLGE: efsanevi kurye, soluk bir hale
       var gr=6+((frame>>2)%4);
-      pixelRing(sx,hostYf(h),gr,'#F7C566',0.6);
-      ctx.fillStyle='#FFE9A8';
+      pixelRing(sx,hostYf(h),gr,'#B4DEF4',0.55);
+      ctx.fillStyle='#DDE8F5';
       ctx.fillRect(Math.round(sx)+((frame>>2)%7)-3,hostYf(h)-hostHalf(h)-4,1,1);
-      if(h.goldLife<2.5&&((frame>>3)%2===0))pixelRing(sx,hostYf(h),gr+3,'#FFE9A8',0.4);
+      if(h.goldLife<2.5&&((frame>>3)%2===0))pixelRing(sx,hostYf(h),gr+3,'#DDE8F5',0.4);
     }
     if(h.bag>0){ // dinç beden: ışıklı işaret
       var bx2=Math.round(sx),by2=hostYf(h)-hostHalf(h)-3;
@@ -1562,7 +1568,7 @@ function draw(){
     var hudCol=(TH.celestial==='sun')?'#14172B':'#F5EFE0';
     var hudMut=(TH.celestial==='sun')?'#2E3A44':'#7A8199';
     var kalan=Math.max(0,Math.round(goalX-(me?me.x:(spirit?spirit.fx:(soulFree?soulFree.x:startX)))));
-    drawText('EVE '+kalan,6,6,'#F7C566',2);
+    drawText('RADYO '+kalan,6,6,'#F7C566',2);
     drawText(LV.label,6,20,hudMut,1);
     if(carriedIdx.length){ // taşınan anlar
       ctx.fillStyle='#FFE9A8';
@@ -1602,10 +1608,10 @@ function loop(now){
   requestAnimationFrame(loop);
 }
 function syncPlayBtn(){
-  document.getElementById('btnPlay').textContent='YENİ GECE — YOLA ÇIK';
-  var t='GECE '+(nightsWalked+1)+' · REKOR: '+Math.round(bestRel)+' / '+TOTAL+' · EVDE '+momsHome+'/30 AN';
-  if(seals.length)t+=' · '+seals.length+' fener mühürlü';
-  if(savedPile)t+=' · yolda '+savedPile.idxs.length+' an bekliyor';
+  document.getElementById('btnPlay').textContent='YENİ GECE — MESAJI TAŞI';
+  var t='GECE '+(nightsWalked+1)+' · REKOR: '+Math.round(bestRel)+' / '+TOTAL+' · YAYINLANAN '+momsHome+'/30 İSİM';
+  if(seals.length)t+=' · '+seals.length+' zula açık';
+  if(savedPile)t+=' · çatlakta '+savedPile.idxs.length+' isim saklı';
   if(anmaWalk)t+=' · ANMA';
   else if(finalDone)t+=' · azat oldun';
   document.getElementById('menuBank').textContent=t;
@@ -1628,12 +1634,12 @@ function start(m){
   syncPlayBtn();
   if(m==='play'){
     nightsWalked++;saveProgress();
-    if(anmaWalk)teach('ANMA — yaşayanlar iyileşiyor; sen artık bir ziyaretçisin.',4000);
-    else if(nightsWalked===1)teach('Dokun → geç. Eski beden kalır.',4200);
-    else if(nightsWalked===2&&bestRel>120)teach('Kedi rekorunda bekliyor — ötesi daha cömert.',3800);
-    else if(nightsWalked===3)teach('Bu gece fenerlere dikkat et: anlarını emanet edebilirsin.',3800);
-    else if(nightsWalked===5)teach('Yol seni tanımaya başladı — dinç bedenler seni buluyor.',3600);
-    else if(nightsWalked===7)teach('Dinlenmiş ruh: gecenin ilk bedeni sana kolay gelir.',3600);
+    if(anmaWalk)teach('ANMA — şehir özgür; yaşlı bir kurye aynı yolu anarak yürüyor.',4000);
+    else if(nightsWalked===1)teach('Dokun → fısılda. Mesaj kuryeye geçer, eski kurye yoluna gider.',4200);
+    else if(nightsWalked===2&&bestRel>120)teach('Köpek en derine sızdığın yerde bekliyor — ötesi daha cömert.',3800);
+    else if(nightsWalked===3)teach('Bu gece güvenli evlere dikkat et: isimleri zulaya bırakabilirsin.',3800);
+    else if(nightsWalked===5)teach('Sokaklar seni tanımaya başladı — gönüllü kuryeler seni buluyor.',3600);
+    else if(nightsWalked===7)teach('Ezberlenmiş parola: gecenin ilk kuryesi sana kolay gelir.',3600);
   }
 }
 document.getElementById('btnPlay').onclick=function(){start('play')};
