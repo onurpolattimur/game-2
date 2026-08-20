@@ -164,10 +164,11 @@ function laneOf(h){return h.type==='truck'?'car':h.type;}
 var PAL={
   W:'#F5EFE0', K:'#14172B', e:'#1A1420',
   h:'#241C2E', s:'#E8B08A',
-  j:'#2F6E66', J:'#5FD3C4', p:'#33405F', b:'#1E2233',
+  j:'#2F6E66', J:'#5FD3C4', p:'#2A303C', b:'#1E2233',
   L:'#9AA2BC', l:'#5A617A', o:'#C97B3C',
-  U:'#5A8BC4', u:'#3A5E8C', A:'#A9D6E5',
-  R:'#FF4D5A', Y:'#FFE9A8', k:'#14172B'
+  U:'#4A5568', u:'#333B4A', A:'#8A93A8',
+  R:'#FF4D5A', Y:'#FFE9A8', k:'#14172B',
+  C:'#3A4256', G:'#5A5248', t:'#2E2A24'
 };
 function spriteSub(rows,sub){
   sub=sub||{};
@@ -180,17 +181,17 @@ function spriteSub(rows,sub){
   }
   return c;
 }
-var RUN_A=['....hhhh....','...hhhhhh...','...ssssss...','...sesses...','...ssssss...','..WWWWWWW...','..jJJJJJj...','.sjJJJJJjs..','..jJJJJJj...','..jjjjjjj...','...pppppp...','..pp...pp...','.pp......pp.','.bb......bb.'];
-var RUN_B=['....hhhh....','...hhhhhh...','...ssssss...','...sesses...','...ssssss...','...WWWWWWW..','..jJJJJJj...','.sjJJJJJjs..','..jJJJJJj...','..jjjjjjj...','...pppppp...','...pp.pp....','....pppp....','....bbbb....'];
-var BIRD_A=['..lll.....','.lLLLl....','.WLLLLLeo.','.WWLLLL...','..WLLl....','..........'];
-var BIRD_B=['..........','.WLLLLLeo.','.WWLLLL...','..WLLLl...','..lLLl....','...ll.....'];
-var CAR_A=['.......uuuuuuuu.......','......uAAAuAAAAu......','.RUUUUUUUUUUUUUUUUUUY.','.UUUUUUUUUUUUUUUUUUUU.','.uuukkuuuuuuuuuukkuuu.','...kkkk......kkkk.....','...kLkk......kLkk.....'];
-var CAR_B=['.......uuuuuuuu.......','......uAAAuAAAAu......','.RUUUUUUUUUUUUUUUUUUY.','.UUUUUUUUUUUUUUUUUUUU.','.uuukkuuuuuuuuuukkuuu.','...kkkk......kkkk.....','...kkLk......kkLk.....'];
-var RUNV=[{},{J:'#F2A65A',j:'#B0722E',h:'#C9A15A'},{J:'#B07BD8',j:'#7A4E9E'}]
+var RUN_A=['...CCCCCC...','..CCCCCCCC..','...ssssss...','...sesses...','...WWWWWW...','..GGGGGGG...','.sGGGGGGGs..','..GGGtGGG...','..GGtGGGoo..','..GGtGGGoo..','..GGGGGGG...','..pp...pp...','.pp......pp.','.bb......bb.'];
+var RUN_B=['...CCCCCC...','..CCCCCCCC..','...ssssss...','...sesses...','...WWWWWW...','..GGGGGGG...','.sGGGGGGGs..','..GGGtGGG...','..GGtGGGoo..','..GGtGGGoo..','..GGGGGGG...','...pp.pp....','....pppp....','....bbbb....'];
+var BIRD_A=['..lll.....','.lLLLl....','.WLLLLLeo.','.WWLLLL...','..WLRl....','..........'];
+var BIRD_B=['..........','.WLLLLLeo.','.WWLLLL...','..WLRLl...','..lLLl....','...ll.....'];
+var CAR_A=['........uuuuuuu.......','......uuAAAuAAuu......','.RUUUUUUUUUUUUUUUUUUY.','.UUUUUUUUUUUUUUUUUUUU.','.uuukkuuuuuuuuuukkuuu.','...kkkk......kkkk.....','...kLkk......kLkk.....'];
+var CAR_B=['........uuuuuuu.......','......uuAAAuAAuu......','.RUUUUUUUUUUUUUUUUUUY.','.UUUUUUUUUUUUUUUUUUUU.','.uuukkuuuuuuuuuukkuuu.','...kkkk......kkkk.....','...kkLk......kkLk.....'];
+var RUNV=[{},{G:'#4A4E5E',C:'#2E3442'},{G:'#5E4A3E',C:'#3E3228'}]
   .map(function(s){return {A:spriteSub(RUN_A,s),B:spriteSub(RUN_B,s)};});
 var BIRDV=[{},{L:'#B08050',l:'#7A5230'},{L:'#E8E2CE',l:'#9AA2BC'}]
   .map(function(s){return {A:spriteSub(BIRD_A,s),B:spriteSub(BIRD_B,s)};});
-var CARV=[{},{U:'#E8C25A',u:'#B08A2E'},{U:'#5FA86E',u:'#3A7048'}]
+var CARV=[{},{U:'#6E3A42',u:'#4A272E'},{U:'#3E5548',u:'#2A3B32'}]
   .map(function(s){return {A:spriteSub(CAR_A,s),B:spriteSub(CAR_B,s)};});
 
 function disc(x,cx,cy,r,col){
@@ -207,7 +208,7 @@ function makeBike(jacket,frameB){
   x.fillRect(12,6,1,2); x.fillRect(11,5,3,1);
   x.fillStyle=jacket; x.fillRect(6,3,4,3); x.fillRect(9,4,2,1);
   x.fillStyle=PAL.s; x.fillRect(11,4,1,1);
-  x.fillStyle=PAL.h; x.fillRect(6,0,4,2);
+  x.fillStyle=PAL.C; x.fillRect(6,0,4,2); x.fillRect(9,1,2,1); // kasket + siperlik
   x.fillStyle=PAL.s; x.fillRect(6,2,4,1);
   x.fillStyle=PAL.e; x.fillRect(9,2,1,1);
   x.fillStyle=PAL.p;
@@ -215,19 +216,19 @@ function makeBike(jacket,frameB){
   else      { x.fillRect(7,6,1,1); x.fillRect(8,7,1,2); }
   return c;
 }
-var BIKEV=['#5FD3C4','#F2A65A'].map(function(col){
+var BIKEV=['#4A4E5E','#5E4A3E'].map(function(col){
   return {A:makeBike(col,false),B:makeBike(col,true)};
 });
 function makeTruck(frameB){
   var c=document.createElement('canvas'); c.width=28; c.height=12;
   var x=c.getContext('2d');
-  x.fillStyle='#6B7594'; x.fillRect(1,1,18,8);
-  x.fillStyle='#8B95B5'; x.fillRect(2,2,16,6);
-  x.fillStyle='#F5EFE0'; x.fillRect(3,5,14,1);
-  x.fillStyle='#3A4468'; x.fillRect(19,4,1,5);
-  x.fillStyle='#4A5578'; x.fillRect(20,3,7,6);
+  x.fillStyle='#4A4F3E'; x.fillRect(1,1,18,8);
+  x.fillStyle='#5A5F4A'; x.fillRect(2,2,16,6);
+  x.fillStyle='#474C3A'; x.fillRect(3,3,14,1); x.fillRect(3,6,14,1); // branda kaburgalari
+  x.fillStyle='#3A3E30'; x.fillRect(19,4,1,5);
+  x.fillStyle='#3E4436'; x.fillRect(20,3,7,6);
   x.fillStyle=PAL.A; x.fillRect(23,4,3,3);
-  x.fillStyle=PAL.Y; x.fillRect(26,7,1,2);
+  x.fillStyle=PAL.Y; x.fillRect(26,7,1,1); // kısık far (karartma)
   x.fillStyle=PAL.R; x.fillRect(1,7,1,2);
   disc(x,5,10,2,PAL.K); disc(x,23,10,2,PAL.K);
   x.fillStyle=PAL.L;
@@ -1148,6 +1149,14 @@ function hostSprite(h){
   var fr=getFrames(h);
   return (Math.floor(h.anim)%2===0)?fr.A:fr.B;
 }
+function drawNote(nx,ny){ // fısıltı: katlanmış mesaj
+  ctx.fillStyle='#F5EFE0';
+  ctx.fillRect(nx-2,ny-2,5,4);
+  ctx.fillStyle='#C9C0A4';
+  ctx.fillRect(nx-2,ny-2,1,1);ctx.fillRect(nx+2,ny-2,1,1);
+  ctx.fillRect(nx-1,ny-1,1,1);ctx.fillRect(nx+1,ny-1,1,1);
+  ctx.fillRect(nx,ny,1,1);
+}
 function drawCat(sx,gy,hop){ // postacı köpek: direnişin dört ayaklı kuryesi
   var ch=hop?1:0;
   ctx.fillStyle='#4A3B2E';
@@ -1373,11 +1382,14 @@ function draw(){
 
   obs.bird.forEach(function(o){
     var sx=Math.round(o.x-camX);if(sx<-16||sx>W+16)return;
-    ctx.fillStyle='#5C3E24';
+    ctx.fillStyle='#3A3E44';
     ctx.fillRect(sx-1,yBird()-8,3,(H-6)-(yBird()-8));
     ctx.fillRect(sx-7,yBird()-8,14,2);
     ctx.fillStyle='#F5EFE0';ctx.fillRect(sx-6,yBird()-10,1,2);ctx.fillRect(sx+5,yBird()-10,1,2);
-    if((frame>>4)%2===0){ctx.fillStyle='#FF4D5A';ctx.fillRect(sx-1,yBird()-13,2,2);}
+    if((frame>>4)%2===0){ // projektör göz kırpar
+      ctx.fillStyle='#FFE9A8';ctx.fillRect(sx-1,yBird()-13,2,2);
+      ctx.globalAlpha=0.18;ctx.fillRect(sx-4,yBird()-16,8,3);ctx.globalAlpha=1;
+    }
   });
   obs.car.forEach(function(o){
     var sx=Math.round(o.x-camX);if(sx<-16||sx>W+16)return;
@@ -1397,14 +1409,16 @@ function draw(){
     if((frame>>4)%2===0){ctx.fillStyle='#FF4D5A';
       ctx.fillRect(sx-6,H-45,1,1);ctx.fillRect(sx+5,H-45,1,1);}
   });
-  obs.runner.forEach(function(o){
+  obs.runner.forEach(function(o){ // nöbetçi: kaldırımda dikilen devriye
     var sx=Math.round(o.x-camX);if(sx<-12||sx>W+12)return;
-    ctx.fillStyle='#F2A65A';
-    ctx.fillRect(sx-1,H-20,2,2);ctx.fillRect(sx-2,H-18,4,2);
-    ctx.fillStyle='#F5EFE0';ctx.fillRect(sx-3,H-16,6,1);
-    ctx.fillStyle='#F2A65A';ctx.fillRect(sx-3,H-15,6,2);
-    ctx.fillRect(sx-4,H-13,8,2);
-    ctx.fillStyle='#C97B3C';ctx.fillRect(sx-5,H-11,10,2);
+    ctx.fillStyle='#2E3442';
+    ctx.fillRect(sx-2,H-22,5,2);
+    ctx.fillRect(sx-1,H-20,3,2);
+    ctx.fillStyle='#242B38';
+    ctx.fillRect(sx-2,H-18,5,6);
+    ctx.fillRect(sx-3,H-17,1,4);ctx.fillRect(sx+3,H-17,1,4);
+    ctx.fillRect(sx-2,H-12,2,3);ctx.fillRect(sx+1,H-12,2,3);
+    if((frame>>4)%2===0){ctx.fillStyle='#FF4D5A';ctx.fillRect(sx+3,H-21,1,1);} // sigara koru
   });
 
   orbs.forEach(function(ob){ // nefes ışıkları
@@ -1463,12 +1477,9 @@ function draw(){
   if(soulFree&&!dead&&mode!=='idle'){
     var sfx2=Math.round(soulFree.x-camX);
     var sfy2=Math.round(soulFree.y)+(((frame>>3)%2===0)?0:1);
-    ctx.fillStyle='#F5EFE0';
-    ctx.fillRect(sfx2-2,sfy2-2,5,1);
-    ctx.fillRect(sfx2-1,sfy2-1,3,1);
-    ctx.fillRect(sfx2,sfy2,1,1);
-    ctx.globalAlpha=0.5;
-    ctx.fillRect(sfx2-3,sfy2+1,1,1);ctx.fillRect(sfx2+3,sfy2+1,1,1);
+    drawNote(sfx2,sfy2);
+    ctx.globalAlpha=0.5;ctx.fillStyle='#F5EFE0';
+    ctx.fillRect(sfx2-4,sfy2,1,1);ctx.fillRect(sfx2+4,sfy2,1,1);
     ctx.globalAlpha=1;
     if((frame>>3)%2===0)
       drawText('DOKUN',Math.round((W-textW('DOKUN',2))/2),18,
@@ -1480,10 +1491,7 @@ function draw(){
     var half=hostHalf(me);
     var bob=((frame>>3)%2===0)?0:1;
     var top=myy-half-5-bob;
-    ctx.fillStyle='#F5EFE0';
-    ctx.fillRect(Math.round(mx)-2,top-2,5,1);
-    ctx.fillRect(Math.round(mx)-1,top-1,3,1);
-    ctx.fillRect(Math.round(mx),top,1,1);
+    drawNote(Math.round(mx),top-1);
     if(chain>0){ // son nefes zinciri: taçta sayılabilir alevler
       for(var ci2=0;ci2<Math.min(chain,3);ci2++){
         var fxx2=Math.round(mx)-4+ci2*4;
@@ -1510,11 +1518,10 @@ function draw(){
     var f=spirit.tt/spirit.dur;
     var sx=spirit.fx+(spirit.to.x-spirit.fx)*f-camX;
     var sy=spirit.fy+(hostYf(spirit.to)-spirit.fy)*f;
-    ctx.fillStyle='#F5EFE0';
-    ctx.fillRect(Math.round(sx)-1,Math.round(sy)-1,3,3);
-    ctx.globalAlpha=0.5;
-    ctx.fillRect(Math.round(sx)-3,Math.round(sy),1,1);
-    ctx.fillRect(Math.round(sx)+3,Math.round(sy),1,1);
+    drawNote(Math.round(sx),Math.round(sy));
+    ctx.globalAlpha=0.5;ctx.fillStyle='#F5EFE0';
+    ctx.fillRect(Math.round(sx)-4,Math.round(sy),1,1);
+    ctx.fillRect(Math.round(sx)+4,Math.round(sy),1,1);
     ctx.globalAlpha=1;
   }
 
