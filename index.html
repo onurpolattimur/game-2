@@ -24,20 +24,26 @@
     text-shadow:2px 2px 0 #1B2136}
   h1 span{color:var(--teal)}
   h2{color:var(--teal);font-size:16px;letter-spacing:.14em}
-  .tag{color:var(--mut);font-size:11px;line-height:1.7;max-width:330px}
+  .tag{color:var(--mut);font-size:13px;line-height:1.75;max-width:380px}
   .tag b{color:var(--cream)}
+  .rules{display:flex;flex-direction:column;gap:7px;font-size:12.5px;color:var(--cream);
+    text-align:left;max-width:340px;line-height:1.5}
+  .rules b{color:var(--teal)}
+  .rules .ic{display:inline-block;width:12px;height:12px;margin-right:8px;vertical-align:-2px;
+    image-rendering:pixelated;border-radius:1px}
   .legend{display:flex;gap:10px;font-size:9.5px;color:var(--mut);flex-wrap:wrap;justify-content:center;max-width:340px}
   .legend i{display:inline-block;width:8px;height:8px;margin-right:4px;vertical-align:-1px}
-  .btn{font-family:inherit;font-size:11px;letter-spacing:.08em;padding:11px 18px;
+  .btn{font-family:inherit;font-size:12.5px;letter-spacing:.08em;padding:12px 20px;
     border:3px solid var(--cream);background:var(--ink);color:var(--cream);
     cursor:pointer;min-width:210px;box-shadow:4px 4px 0 #1B2136}
   .btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #1B2136}
   .btn:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
   .btn.primary{background:var(--cream);color:var(--ink);font-weight:700}
   #deathScore,#winScore{color:var(--cream);font-size:34px;font-weight:700;text-shadow:2px 2px 0 #1B2136}
-  .small{color:var(--mut);font-size:9px;letter-spacing:.12em}
-  #teach{position:absolute;top:16%;left:0;right:0;text-align:center;
-    color:var(--cream);font-size:11px;letter-spacing:.08em;text-shadow:1px 1px 0 #1B2136;
+  .small{color:var(--mut);font-size:10.5px;letter-spacing:.1em}
+  #teach{position:absolute;top:15%;left:0;right:0;text-align:center;
+    color:var(--cream);font-size:14px;font-weight:700;letter-spacing:.06em;
+    text-shadow:2px 2px 0 #1B2136;
     opacity:0;transition:opacity .6s;pointer-events:none;z-index:4}
   .corner{position:absolute;top:10px;right:10px;display:flex;gap:8px;z-index:5}
   .cbtn{font-family:inherit;font-size:12px;padding:7px 10px;
@@ -57,15 +63,11 @@
 
   <div class="overlay" id="menu">
     <h1>FISIL<span>TI</span></h1>
-    <div class="tag"><b>Şehir işgal altında. Sen bir mesajsın.</b><br>
-    Bir kuryeye dokun → sana o fısıldar. Tebeşir işaretleri şüpheyi dağıtır.<br>
-    Kurye yakalanırsa gece biter — yarın gece başka ağızlar dener. Şehir hatırlar.</div>
-    <div class="legend">
-      <span><i style="background:#9AA2BC"></i>güvercin→tel devriyesi</span>
-      <span><i style="background:#5A8BC4"></i>otomobil→kontrol noktası</span>
-      <span><i style="background:#F2A65A"></i>bisikletli→nöbetçi</span>
-      <span><i style="background:#5FD3C4"></i>yaya→devriye</span>
-      <span><i style="background:#8B95B5"></i>kamyon→barikatı yarar</span>
+    <div class="tag"><b>Şehir işgal altında. Sen yasak bir mesajsın.</b></div>
+    <div class="rules">
+      <div><span class="ic" style="background:#F5EFE0"></span><b>Dokun</b> → o kurye seni taşır. Eskisi yoluna gider.</div>
+      <div><span class="ic" style="background:#FF4D5A"></span>Uzun taşıyan kurye <b>şüphe çeker</b> — kırmızı dolmadan el değiştir.</div>
+      <div><span class="ic" style="background:#FFE9A8"></span>Yoldaki <b>isimleri</b> topla, <b>RADYO</b>ya ulaştır. Yakalanırsan yarın gece yeniden.</div>
     </div>
     <button class="btn primary" id="btnPlay">LEVEL 1 — YOLA ÇIK</button>
     <div class="small" style="color:#F7C566" id="menuBank"></div>
@@ -704,7 +706,7 @@ cv.addEventListener('pointerdown',function(e){
         if(ix>=0)spotsGone[ix]=1;
       }
       saveProgress();
-      fx.texts.push({x:slx2,y:yRunner()-36,s:'EMANET',a:1.5,c:'#FFE9A8'});
+      fx.texts.push({x:slx2,y:yRunner()-36,s:'SAKLANDI',a:1.5,c:'#FFE9A8'});
       fx.rings.push({x:slx2,y:yRunner()-14,r:4,a:1.4});
       SFX.win();
       sealPromptLb=-1;
@@ -894,7 +896,7 @@ function update(dt){
       }
       if(sealPromptLb>=0&&!emanetSeen){ // bedelin bilgisi bir kez, nötr
         emanetSeen=true;saveProgress();
-        teach('Zulaya dokun: '+sealCost()+' isim burada saklanır, gece buradan başlar. Dokunmazsan isimler radyoya gider.',5200);
+        teach('Kapıya dokun: '+sealCost()+' isim saklanır, gece buradan başlar. Dokunmazsan → radyoya.',5000);
       }
     }
     for(var bi2=0;bi2<bigMoms.length;bi2++){var bm=bigMoms[bi2];
@@ -1058,13 +1060,10 @@ function die(reason){
     (newChain&&runMaxChain>=2?'ZİNCİR ×'+runMaxChain:
      'RADYOYA '+Math.round(goalX-dxx)+' VARDI');
   document.getElementById('deathStats').innerHTML=
-    'köpek seni bekliyor — şehir hatırlıyor<br>'+
-    (newRec?'<b style="color:#FFE9A8">+'+Math.round(rel-bestRel)+' daha ileri gittin</b>':
-      'rekoruna <b style="color:#FFE9A8">'+Math.round(bestRel-rel)+'</b> kalmıştı')+
-    (newChain&&runMaxChain>=2&&newRec?'<br><b style="color:#5FD3C4">devir zincirin ×'+runMaxChain+' — en uzunu</b>':'')+
-    '<br>'+swaps+' kurye · '+clutch+' son anda devir · '+smashed+' barikat'+
-    (carriedIdx.length?'<br><b style="color:#FFE9A8">'+carriedIdx.length+' isim duvar çatlağında saklanacak</b>':'')+
-    (missedGold?'<br><b style="color:#F7C566">Gölge geçti, yetişemedin — belki yarın gece</b>':'');
+    (newRec?'<b style="color:#FFE9A8">+'+Math.round(rel-bestRel)+' daha derine sızdın.</b> Köpek yeni sınırda bekliyor.':
+      'Rekoruna <b style="color:#FFE9A8">'+Math.round(bestRel-rel)+'</b> kalmıştı — köpek orada bekliyor.')+
+    (carriedIdx.length?'<br>Taşıdığın <b style="color:#FFE9A8">'+carriedIdx.length+' isim</b> düştüğün yerde saklandı — yarın gece geri al.':'')+
+    (missedGold?'<br><span style="color:#B4DEF4">Gölge geçti, yetişemedin.</span>':'');
   document.getElementById('btnRevive').style.display=(reviveUsed||mode==='auto')?'none':'block';
   document.getElementById('btnFromStart').style.display=seals.length?'block':'none';
   setTimeout(function(){document.getElementById('death').classList.remove('hidden');},450);
@@ -1169,19 +1168,24 @@ function drawCat(sx,gy,hop){ // postacı köpek: direnişin dört ayaklı kuryes
   ctx.fillStyle='#241C2E';
   ctx.fillRect(sx+6,gy-6-ch,1,1);
 }
-function drawRest(sx,sealed){ // yol feneri; mühürlüyse emanet anlar döner
+function drawRest(sx,sealed){ // güvenli ev: lambalı kapı; açık zulada isimler döner
   var gy=H-6;
-  ctx.fillStyle='#5C3E24';ctx.fillRect(sx-1,gy-22,2,22);
+  ctx.fillStyle='#20263A';ctx.fillRect(sx-5,gy-18,11,18);   // duvar
+  ctx.fillStyle='#161B2C';ctx.fillRect(sx-2,gy-13,5,13);    // kapı
+  ctx.fillStyle='#C9C0A4';ctx.fillRect(sx+1,gy-7,1,1);      // tokmak
   var glow=((frame>>4)%2===0);
   ctx.fillStyle=glow?'#FFE9A8':'#F7C566';
-  ctx.fillRect(sx-2,gy-26,4,4);
-  ctx.globalAlpha=sealed?0.35:0.22;ctx.fillStyle='#FFE9A8';
-  ctx.fillRect(sx-4,gy-28,8,8);ctx.globalAlpha=1;
+  ctx.fillRect(sx-1,gy-22,3,3);                             // kapı lambası
+  ctx.fillStyle='#3A4256';ctx.fillRect(sx-1,gy-19,3,1);
+  ctx.globalAlpha=sealed?0.35:0.2;ctx.fillStyle='#FFE9A8';
+  ctx.fillRect(sx-4,gy-24,9,7);ctx.globalAlpha=1;           // ışık halesi
+  ctx.fillStyle='#F5EFE0';                                   // kapıda tebeşir V: dost evi
+  ctx.fillRect(sx-4,gy-16,1,1);ctx.fillRect(sx-3,gy-15,1,1);ctx.fillRect(sx-2,gy-16,1,1);
   if(sealed){
     for(var oi2=0;oi2<3;oi2++){
       var ang=frame*0.06+oi2*2.09;
       ctx.fillStyle=(oi2===((frame>>4)%3))?'#F5EFE0':'#FFE9A8';
-      ctx.fillRect(Math.round(sx+Math.cos(ang)*8),Math.round(gy-24+Math.sin(ang)*4),1,1);
+      ctx.fillRect(Math.round(sx+Math.cos(ang)*9),Math.round(gy-20+Math.sin(ang)*5),1,1);
     }
   }
 }
@@ -1355,13 +1359,13 @@ function draw(){
       drawRest(Math.round(lxx),seals.indexOf(lb)>=0);
       if(lb===sealPromptLb){
         if((frame>>3)%2===0){
-          drawText('EMANET',Math.round(lxx-textW('EMANET',1)/2),H-44,'#FFE9A8',1);
-          pixelRing(lxx,H-30,9,'#FFE9A8',0.5);
+          drawText('SAKLA',Math.round(lxx-textW('SAKLA',2)/2),H-52,'#FFE9A8',2);
+          pixelRing(lxx,H-30,11,'#FFE9A8',0.6);
         }
-        drawText('RADYO',Math.round(lxx)+14,H-44,'#5FD3C4',1);
+        drawText('RADYO',Math.round(lxx)+18,H-44,'#5FD3C4',1);
         ctx.fillStyle='#5FD3C4';
-        ctx.fillRect(Math.round(lxx)+28,H-41,4,1);
-        ctx.fillRect(Math.round(lxx)+31,H-42,1,3);
+        ctx.fillRect(Math.round(lxx)+40,H-41,4,1);
+        ctx.fillRect(Math.round(lxx)+43,H-42,1,3);
       }
     }
   }
@@ -1409,7 +1413,7 @@ function draw(){
     if((frame>>4)%2===0){ctx.fillStyle='#FF4D5A';
       ctx.fillRect(sx-6,H-45,1,1);ctx.fillRect(sx+5,H-45,1,1);}
   });
-  obs.runner.forEach(function(o){ // nöbetçi: kaldırımda dikilen devriye
+  obs.runner.forEach(function(o){ // nöbetçi: kızıl bantlı, tüfekli
     var sx=Math.round(o.x-camX);if(sx<-12||sx>W+12)return;
     ctx.fillStyle='#2E3442';
     ctx.fillRect(sx-2,H-22,5,2);
@@ -1418,7 +1422,10 @@ function draw(){
     ctx.fillRect(sx-2,H-18,5,6);
     ctx.fillRect(sx-3,H-17,1,4);ctx.fillRect(sx+3,H-17,1,4);
     ctx.fillRect(sx-2,H-12,2,3);ctx.fillRect(sx+1,H-12,2,3);
-    if((frame>>4)%2===0){ctx.fillStyle='#FF4D5A';ctx.fillRect(sx+3,H-21,1,1);} // sigara koru
+    ctx.fillStyle='#FF4D5A';ctx.fillRect(sx-2,H-21,5,1);   // kasket bandı
+    ctx.fillRect(sx+3,H-17,1,1);                            // kol bandı
+    ctx.fillStyle='#161B2C';ctx.fillRect(sx-4,H-24,1,12);   // omuzda tüfek
+    ctx.fillStyle='#5C3E24';ctx.fillRect(sx-4,H-14,1,3);
   });
 
   orbs.forEach(function(ob){ // nefes ışıkları
@@ -1434,14 +1441,12 @@ function draw(){
     }
   });
 
-  bigMoms.forEach(function(bm){ // büyük anlar: parlayan yıldızlar
+  bigMoms.forEach(function(bm){ // isimler: parlayan zarflar
     if(bm.got)return;
     var bsx=Math.round(bm.x-camX);if(bsx<-10||bsx>W+10)return;
     var bsy=laneYof(bm.lane)-11+(((frame>>3)%2===0)?0:1);
-    ctx.fillStyle='#FFE9A8';
-    ctx.fillRect(bsx,bsy-3,1,7);ctx.fillRect(bsx-3,bsy,7,1);
-    ctx.fillStyle='#F5EFE0';ctx.fillRect(bsx-1,bsy-1,3,3);
-    pixelRing(bsx,bsy,5+((frame>>2)%4),'#FFE9A8',0.4);
+    drawNote(bsx,bsy);
+    pixelRing(bsx,bsy,6+((frame>>2)%4),'#FFE9A8',0.45);
   });
   if(dropPile){ // yola düşen anlar bekler
     var ppx=Math.round(dropPile.x-camX);
@@ -1503,13 +1508,20 @@ function draw(){
       }
     }
     if(goldPowerT>0&&((frame>>2)%2===0))pixelRing(mx,myy,hostHalf(me)+4,'#F7C566',0.35);
-    if(LV.drainMul>0){
-      var bw=9,fill=Math.max(0,Math.round(me.st*bw));
-      ctx.fillStyle='#14172B';ctx.fillRect(Math.round(mx)-4,top-6,bw,2);
-      var low=me.st<0.3;
-      if(!low||((frame>>3)%2===0)){
-        ctx.fillStyle=low?'#FF4D5A':'#5FD3C4';
-        ctx.fillRect(Math.round(mx)-4,top-6,fill,2);
+    if(LV.drainMul>0){ // şüphe: kırmızı dolarsa kurye yanar
+      var bw=12,susp=Math.max(0,Math.min(bw,Math.round((1-me.st)*bw)));
+      ctx.fillStyle='#14172B';ctx.fillRect(Math.round(mx)-6,top-7,bw+2,4);
+      ctx.fillStyle='#3A4256';ctx.fillRect(Math.round(mx)-5,top-6,bw,2);
+      var hot=me.st<0.3;
+      if(!hot||((frame>>3)%2===0)){
+        ctx.fillStyle=hot?'#FF4D5A':'#C9634E';
+        ctx.fillRect(Math.round(mx)-5,top-6,susp,2);
+      }
+      if(hot&&((frame>>3)%2===0)){ // göz: bakıyorlar
+        ctx.fillStyle='#FF4D5A';
+        ctx.fillRect(Math.round(mx)+9,top-7,3,1);ctx.fillRect(Math.round(mx)+8,top-6,5,2);
+        ctx.fillStyle='#14172B';ctx.fillRect(Math.round(mx)+10,top-6,1,1);
+        ctx.fillStyle='#FF4D5A';ctx.fillRect(Math.round(mx)+9,top-4,3,1);
       }
     }
   }
@@ -1530,11 +1542,11 @@ function draw(){
       var tp=trailH[Math.min(trailH.length-1,8+tci*7)];
       var tx2=Math.round(tp.x-camX),ty2=Math.round(tp.y);
       if(tx2<-4||tx2>W+4)continue;
-      ctx.fillStyle='#F7C566';ctx.fillRect(tx2,ty2,2,2);
-      ctx.fillStyle='#FFE9A8';ctx.fillRect(tx2,ty2,1,1);
+      ctx.fillStyle='#F5EFE0';ctx.fillRect(tx2-1,ty2-1,3,2);
+      ctx.fillStyle='#C9C0A4';ctx.fillRect(tx2,ty2-1,1,1);
       if(((frame>>2)+tci)%3===0){
-        ctx.globalAlpha=0.5;ctx.fillStyle='#FFE9A8';
-        ctx.fillRect(tx2-1,ty2-1,3,3);ctx.globalAlpha=1;
+        ctx.globalAlpha=0.4;ctx.fillStyle='#FFE9A8';
+        ctx.fillRect(tx2-2,ty2-2,5,4);ctx.globalAlpha=1;
       }
     }
   }
@@ -1563,11 +1575,15 @@ function draw(){
     ctx.fillRect(Math.round(c.x-camX),Math.round(c.y),2,2);
   });
   ctx.globalAlpha=1;
-  if(fx.finger){
+  if(fx.finger){ // hedef oku: bu kuryeye dokun
     ctx.globalAlpha=Math.max(fx.finger.a,0);
-    ctx.fillStyle='#F5EFE0';
-    ctx.fillRect(Math.round(fx.finger.x-camX)-1,Math.round(fx.finger.y)-1,3,3);
-    pixelRing(fx.finger.x-camX,fx.finger.y,7,'#F5EFE0',fx.finger.a);
+    var agx=Math.round(fx.finger.x-camX),agy=Math.round(fx.finger.y)-14+(((frame>>3)%2===0)?0:2);
+    ctx.fillStyle='#FFE9A8';
+    ctx.fillRect(agx-3,agy-4,7,2);
+    ctx.fillRect(agx-2,agy-2,5,2);
+    ctx.fillRect(agx-1,agy,3,2);
+    ctx.fillRect(agx,agy+2,1,2);
+    pixelRing(agx,Math.round(fx.finger.y),9,'#FFE9A8',fx.finger.a*0.7);
     ctx.globalAlpha=1;
   }
 
@@ -1575,14 +1591,17 @@ function draw(){
     var hudCol=(TH.celestial==='sun')?'#14172B':'#F5EFE0';
     var hudMut=(TH.celestial==='sun')?'#2E3A44':'#7A8199';
     var kalan=Math.max(0,Math.round(goalX-(me?me.x:(spirit?spirit.fx:(soulFree?soulFree.x:startX)))));
-    drawText('RADYO '+kalan,6,6,'#F7C566',2);
-    drawText(LV.label,6,20,hudMut,1);
-    if(carriedIdx.length){ // taşınan anlar
-      ctx.fillStyle='#FFE9A8';
-      ctx.fillRect(6,30,1,5);ctx.fillRect(4,32,5,1);
-      drawText(''+carriedIdx.length,12,30,'#FFE9A8',1);
+    drawText(''+kalan,6,6,'#F7C566',2);
+    drawText('RADYOYA KALAN',6,20,hudMut,1);
+    drawText(LV.label,6,28,hudMut,1);
+    for(var zi=0;zi<Math.min(carriedIdx.length,5);zi++){ // taşınan isimler: zarflar
+      var zx=7+zi*7;
+      ctx.fillStyle='#F5EFE0';
+      ctx.fillRect(zx-2,38,5,4);
+      ctx.fillStyle='#C9C0A4';
+      ctx.fillRect(zx-2,38,1,1);ctx.fillRect(zx+2,38,1,1);ctx.fillRect(zx,39,1,1);
     }
-    var lbl=(mode==='auto')?'DEMO':'TAP=SWAP';
+    var lbl=(mode==='auto')?'DEMO':'DOKUN=DEVRET';
     drawText(lbl,W-6-textW(lbl,1),6,hudMut,1);
     if(LV.label&&biomeFlashT>0&&((frame>>4)%4!==3))
       drawText(LV.label,Math.round((W-textW(LV.label,2))/2),30,'#F7C566',2);
@@ -1616,9 +1635,9 @@ function loop(now){
 }
 function syncPlayBtn(){
   document.getElementById('btnPlay').textContent='YENİ GECE — MESAJI TAŞI';
-  var t='GECE '+(nightsWalked+1)+' · REKOR: '+Math.round(bestRel)+' / '+TOTAL+' · YAYINLANAN '+momsHome+'/30 İSİM';
-  if(seals.length)t+=' · '+seals.length+' zula açık';
-  if(savedPile)t+=' · çatlakta '+savedPile.idxs.length+' isim saklı';
+  var t='GECE '+(nightsWalked+1)+' · REKOR '+Math.round(bestRel)+'/'+TOTAL+' · '+momsHome+' İSİM YAYINDA';
+  if(seals.length)t+=' · '+seals.length+' güvenli ev senin';
+  if(savedPile)t+=' · yolda '+savedPile.idxs.length+' isim seni bekliyor';
   if(anmaWalk)t+=' · ANMA';
   else if(finalDone)t+=' · azat oldun';
   document.getElementById('menuBank').textContent=t;
@@ -1641,12 +1660,12 @@ function start(m){
   syncPlayBtn();
   if(m==='play'){
     nightsWalked++;saveProgress();
-    if(anmaWalk)teach('ANMA — şehir özgür; yaşlı bir kurye aynı yolu anarak yürüyor.',4000);
-    else if(nightsWalked===1)teach('Dokun → fısılda. Mesaj kuryeye geçer, eski kurye yoluna gider.',4200);
-    else if(nightsWalked===2&&bestRel>120)teach('Köpek en derine sızdığın yerde bekliyor — ötesi daha cömert.',3800);
-    else if(nightsWalked===3)teach('Bu gece güvenli evlere dikkat et: isimleri zulaya bırakabilirsin.',3800);
-    else if(nightsWalked===5)teach('Sokaklar seni tanımaya başladı — gönüllü kuryeler seni buluyor.',3600);
-    else if(nightsWalked===7)teach('Ezberlenmiş parola: gecenin ilk kuryesi sana kolay gelir.',3600);
+    if(anmaWalk)teach('ANMA — şehir özgür. Yol artık bir hatıra.',4000);
+    else if(nightsWalked===1)teach('Bir kuryeye dokun — mesajı o taşısın.',4200);
+    else if(nightsWalked===2&&bestRel>120)teach('Köpek rekorunda bekliyor. Daha derine.',3600);
+    else if(nightsWalked===3)teach('Lambalı kapılar dosttur — isim saklayabilirsin.',3600);
+    else if(nightsWalked===5)teach('Sokaklar seni tanıyor artık.',3000);
+    else if(nightsWalked===7)teach('Parola ezberlendi — ilk kurye kolay gelir.',3000);
   }
 }
 document.getElementById('btnPlay').onclick=function(){start('play')};
