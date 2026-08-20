@@ -109,37 +109,39 @@ var W=240,H=160;
 
 // ---------- TEMALAR ----------
 var THEMES=[
+ // Şerit hiyerarşisi her temada aynı: koyu asfalt / kızıl-kahve parke
+ // bisiklet yolu / AÇIK taş kaldırım (koyu paltolar kaldırımda patlasın).
  { name:'KARARTMA', stars:false, clouds:true, celestial:'sunset', hills:false,
    seq:[147,0,165,0,131,0,196,165],
-   sky:['#46516B','#566179','#66718A'],
-   farCol:'#232B3F', nearCol:'#1B2231', winCol:'#C9A15A',
-   road:'#262C3A', roadEdge:'#3E4658', dash:'#8A93A8',
-   bike:'#202634', bikeDash:'#8A93A8',
-   side:'#2E3646', sideEdge:'#3E4658', seam:'#28303E',
-   bottom:'#141A26', wire:'#3E4658' },
+   sky:['#3E4A66','#56617E','#7E8296'],
+   farCol:'#1E2536', nearCol:'#171D2C', winCol:'#E8B05A',
+   road:'#22262F', roadEdge:'#4A5162', dash:'#9AA2B4',
+   bike:'#2E2626', bikeDash:'#8A6A5A',
+   side:'#4A4A52', sideEdge:'#5E5E68', seam:'#40404A',
+   bottom:'#1A1A22', wire:'#4A5162' },
  { name:'GECE', stars:true, clouds:false, celestial:'moon', hills:false,
    seq:[123,0,147,0,110,0,165,147],
-   sky:['#171132','#121430','#0E132B'],
-   farCol:'#10142A', nearCol:'#151B33', winCol:'#C9A15A',
-   road:'#1A1F33', roadEdge:'#3A4468', dash:'#8A93A8',
-   bike:'#1D2438', bikeDash:'#4A8AA8',
-   side:'#232B47', sideEdge:'#3A4468', seam:'#2E3752',
-   bottom:'#0A0D18', wire:'#3A4468' },
+   sky:['#141838','#101430','#0C1028'],
+   farCol:'#0E1226', nearCol:'#131832', winCol:'#E8B05A',
+   road:'#1C2030', roadEdge:'#3E4662', dash:'#8A93A8',
+   bike:'#282024', bikeDash:'#7A5A4E',
+   side:'#3A3A46', sideEdge:'#4E4E5E', seam:'#32323E',
+   bottom:'#12121C', wire:'#3E4662' },
  { name:'DERİN GECE', stars:true, clouds:false, celestial:'moon', hills:false,
-   sky:['#0B0E1E','#090C19','#070A15'],
-   farCol:'#0B0F1D', nearCol:'#0F1424', winCol:'#8A93A8',
-   road:'#12172A', roadEdge:'#2A3350', dash:'#6A7390',
-   bike:'#141A2C', bikeDash:'#4A8AA8',
-   side:'#1A2138', sideEdge:'#2A3350', seam:'#20283C',
-   bottom:'#070A12', wire:'#2A3350' }
+   sky:['#0A0C1C','#080A18','#060814'],
+   farCol:'#0A0E1C', nearCol:'#0D1220', winCol:'#8A93A8',
+   road:'#161A28', roadEdge:'#2E3650', dash:'#5A6478',
+   bike:'#201A20', bikeDash:'#5E4640',
+   side:'#30303C', sideEdge:'#424250', seam:'#2A2A34',
+   bottom:'#0E0E16', wire:'#2E3650' }
 ];
 var DAWN={ name:'ŞAFAK', stars:false, clouds:true, celestial:'sun', hills:false,
   sky:['#F5C6A0','#F8DCC0','#FBEDD8'],
   farCol:'#8A7060', nearCol:'#9A8070', winCol:'#FFF6E5',
-  road:'#8A7A6E', roadEdge:'#B0988A', dash:'#FFF6E5',
-  bike:'#7A6A5E', bikeDash:'#F2A65A',
-  side:'#C9A878', sideEdge:'#A8885E', seam:'#B8986A',
-  bottom:'#8A6A48', wire:'#B0988A' };
+  road:'#7A6E64', roadEdge:'#A8917E', dash:'#FFF6E5',
+  bike:'#6E5A50', bikeDash:'#C9834E',
+  side:'#C9B292', sideEdge:'#A89272', seam:'#B8A282',
+  bottom:'#8A6A48', wire:'#A8917E' };
 var TH=THEMES[0];
 
 // ---------- uyarlanır tam ekran ----------
@@ -1276,9 +1278,13 @@ function draw(){
       ctx.fillRect(26,16,2,1);ctx.fillRect(41,16,2,1);
     }
   } else if(TH.celestial==='sunset'){
-    ctx.fillStyle='#FFB25E';
-    for(var dy=-11;dy<=0;dy++)for(var dx=-11;dx<=11;dx++)
-      if(dx*dx+dy*dy<=121)ctx.fillRect(Math.round(W*0.4)+dx,ROAD-56+dy,1,1);
+    ctx.fillStyle='#C98D5E';
+    for(var dy=-7;dy<=0;dy++)for(var dx=-7;dx<=7;dx++)
+      if(dx*dx+dy*dy<=49)ctx.fillRect(Math.round(W*0.4)+dx,ROAD-56+dy,1,1);
+    ctx.globalAlpha=0.35;ctx.fillStyle='#D8A87A'; // pus bantları
+    ctx.fillRect(Math.round(W*0.4)-12,ROAD-59,24,1);
+    ctx.fillRect(Math.round(W*0.4)-9,ROAD-62,18,1);
+    ctx.globalAlpha=1;
   } else {
     ctx.fillStyle='#EDE6CF';
     ctx.fillRect(W-30,10,7,7);ctx.fillRect(W-32,12,11,3);
@@ -1610,7 +1616,7 @@ function draw(){
 
     var bw2=Math.min(100,W-120);
     var bx0=Math.round((W-bw2)/2);
-    var prog=Math.max(0,Math.min(1,((me?me.x:(spirit?spirit.fx:startX))-startX)/LV.dist));
+    var prog=Math.max(0,Math.min(1,((me?me.x:(spirit?spirit.fx:(soulFree?soulFree.x:startX)))-startX)/TOTAL));
     ctx.fillStyle='#14172B';ctx.fillRect(bx0,7,bw2,3);
     ctx.fillStyle='#5FD3C4';ctx.fillRect(bx0,7,Math.round(bw2*prog),3);
     ctx.fillStyle='#F5EFE0';ctx.fillRect(bx0+Math.round(bw2/2),6,1,5);
