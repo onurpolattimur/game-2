@@ -128,6 +128,7 @@ var THEMES=[
    side:'#3A3A46', sideEdge:'#4E4E5E', seam:'#32323E',
    bottom:'#12121C', wire:'#3E4662' },
  { name:'DERİN GECE', stars:true, clouds:false, celestial:'moon', hills:false,
+   seq:[110,0,0,0,98,0,0,123],
    sky:['#0A0C1C','#080A18','#060814'],
    farCol:'#0A0E1C', nearCol:'#0D1220', winCol:'#8A93A8',
    road:'#161A28', roadEdge:'#2E3650', dash:'#5A6478',
@@ -136,6 +137,7 @@ var THEMES=[
    bottom:'#0E0E16', wire:'#2E3650' }
 ];
 var DAWN={ name:'ŞAFAK', stars:false, clouds:true, celestial:'sun', hills:false,
+  seq:[196,0,0,0,0,0,165,0],
   sky:['#F5C6A0','#F8DCC0','#FBEDD8'],
   farCol:'#8A7060', nearCol:'#9A8070', winCol:'#FFF6E5',
   road:'#7A6E64', roadEdge:'#A8917E', dash:'#FFF6E5',
@@ -335,13 +337,22 @@ function makeStars(){
 }
 
 // ---------- SES ----------
-var AC=null,master,musicGain,muted=false,musicStep=0,nextT=0;
+var AC=null,master,musicGain,ambGain=null,muted=false,musicStep=0,nextT=0;
 function initAudio(){
   if(AC)return;
   var Ctor=window.AudioContext||window.webkitAudioContext; if(!Ctor)return;
   AC=new Ctor();
   master=AC.createGain(); master.gain.value=muted?0:0.5; master.connect(AC.destination);
   musicGain=AC.createGain(); musicGain.gain.value=0.15; musicGain.connect(master);
+  // uzak radyo cızırtısı: sürekli, radyoya yaklaştıkça belirginleşir
+  var ab=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate);
+  var ad2=ab.getChannelData(0);
+  for(var ai=0;ai<ad2.length;ai++)ad2[ai]=(Math.random()*2-1)*(Math.random()<0.02?1:0.25);
+  var asrc=AC.createBufferSource();asrc.buffer=ab;asrc.loop=true;
+  var af=AC.createBiquadFilter();af.type='bandpass';af.frequency.value=1400;af.Q.value=0.8;
+  ambGain=AC.createGain();ambGain.gain.value=0.004;
+  asrc.connect(af);af.connect(ambGain);ambGain.connect(master);
+  asrc.start();
   nextT=AC.currentTime+0.1;
   setInterval(schedMusic,90);
 }
@@ -483,10 +494,10 @@ var fx,t,swaps,clutch,smashed,aiCool,shake,slowT,dead,frame=0,warned,truckSeen;
 var orbs,orbGen,reviveUsed,invulnT,freshT,tutHint=false;
 var dropPile,deathSettle=null,arrivalPop=null;
 var bigMoms=[],carriedIdx=[],trailH=[];
-var curBiome=0,biomeFlashT=0,finalDone=false;
+var curBiome=0,biomeFlashT=0,biomeFade=null,finalDone=false;
 var recCrossed=false,catFollowT=0;
 var chain=0,hopClutch=false,goldTimer=0,goldPowerT=0,missedGold=false;
-var chainBest=0,runMaxChain=0;
+var chainBest=0,runMaxChain=0,chainFlashT=0;
 var soulFree=null,nightsWalked=0,teachT=null,emanetSeen=false,spotB=null;
 var sealPromptLb=-1,forceStart=false,nightBonus=false;
 var isFinal=false; // son biyomda mıyız (kutsal final)
@@ -790,7 +801,41 @@ function update(dt){
 
   if(invulnT>0)invulnT-=dt;
   if(freshT>0)freshT-=dt;
+  if(chainFlashT>0)chainFlashT-=dt;
+  if(ambGain&&mode==='play'){
+    var prox=me?Math.max(0,Math.min(1,(me.x-startX)/TOTAL)):0;
+    ambGain.gain.value=0.004+prox*prox*0.05; // radyo yaklaşıyor: cızırtı sinyale döner
+  }
   if(biomeFlashT>0)biomeFlashT-=dt;
+  if(biomeFade){
+    biomeFade.t+=dt;
+    if(biomeFade.t>=0.32&&!biomeFade.done){ // perdenin en koyu anında dünya değişir
+      biomeFade.done=true;
+      var lx=startX+BND[curBiome];
+      if(carriedIdx.length&&mode!=='auto'){
+        var sent=carriedIdx.length;
+        for(var si=0;si<carriedIdx.length;si++)
+          if(carriedIdx[si]>=0)spotsGone[carriedIdx[si]]=1;
+        momsHome+=sent;carriedIdx=[];
+        saveProgress();
+        for(var fi2=0;fi2<Math.min(sent,8);fi2++)
+          fx.fly.push({t:-fi2*0.12,x0:lx-6-Math.random()*10,y0:H-40-Math.random()*20});
+        fx.texts.push({x:lx,y:yRunner()-34,s:'RADYO',a:1.3,c:'#FFE9A8'});
+        SFX.orb();
+      }
+      if(giftOn(8)&&me){me.st=1;fx.texts.push({x:lx,y:yRunner()-42,s:'GUVEN',a:1.1,c:'#FFE9A8'});}
+      curBiome=biomeFade.nb;level=curBiome+1;isFinal=(curBiome===STAGES-1);
+      LV=routeParams(level);
+      TH=LV.th===3?DAWN:THEMES[LV.th];
+      makeBackdrops();biomeFlashT=3;
+      if(me)LANES.forEach(function(l){
+        if(LV.lanes.indexOf(l)>=0&&gen[l]>goalX)gen[l]=me.x+W;
+      });
+      if(musicGain)musicGain.gain.value=isFinal?0.05:0.15; // şafakta müzik incelir
+      SFX.ui();
+    }
+    if(biomeFade.t>=0.75)biomeFade=null;
+  }
   if(catFollowT>0)catFollowT-=dt;
 
   if(LV.drainMul>0&&me&&!spirit&&freshT<=0){
@@ -813,7 +858,7 @@ function update(dt){
             fx.puffs.push({x:h.x,y:hostYf(h),r:2,a:1});
             if(h.x>camX-10&&h.x<camX+W+10)SFX.crash();
             if(h===lastHost&&(t-lastHopT)<0.6){
-              clutch++;hopClutch=true;chain++;
+              clutch++;hopClutch=true;chain++;chainFlashT=0.45;
               if(chain>runMaxChain)runMaxChain=chain;
               SFX.chainUp(chain); // her adımda perdesi yükselen çan
               if(me)me.st=Math.min(1,me.st+0.3); // beden son nefesini sana verir
@@ -871,30 +916,8 @@ function update(dt){
       fx.rings.push({x:me.x,y:hostYf(me),r:9,a:1});
       SFX.win();
     }
-    var nb=biomeAt(me.x);
-    if(nb!==curBiome){ // biyom sınırı: fener — taşınan anlar eve gönderilir
-      var lx=startX+BND[curBiome];
-      if(carriedIdx.length&&mode!=='auto'){
-        var sent=carriedIdx.length;
-        for(var si=0;si<carriedIdx.length;si++)
-          if(carriedIdx[si]>=0)spotsGone[carriedIdx[si]]=1;
-        momsHome+=sent;carriedIdx=[];
-        saveProgress();
-        for(var fi2=0;fi2<Math.min(sent,8);fi2++)
-          fx.fly.push({t:-fi2*0.12,x0:lx-6-Math.random()*10,y0:H-40-Math.random()*20});
-        fx.texts.push({x:lx,y:yRunner()-34,s:'RADYO',a:1.3,c:'#FFE9A8'});
-        SFX.orb();
-      }
-      if(giftOn(8)){me.st=1;fx.texts.push({x:lx,y:yRunner()-42,s:'GUVEN',a:1.1,c:'#FFE9A8'});}
-      curBiome=nb;level=curBiome+1;isFinal=(curBiome===STAGES-1);
-      LV=routeParams(level);
-      TH=LV.th===3?DAWN:THEMES[LV.th];
-      makeBackdrops();biomeFlashT=3;
-      LANES.forEach(function(l){ // yeni biyomda açılan şeritlerin üretimini uyandır
-        if(LV.lanes.indexOf(l)>=0&&gen[l]>goalX)gen[l]=me.x+W;
-      });
-      SFX.ui();
-    }
+    if(biomeAt(me.x)!==curBiome&&!biomeFade)
+      biomeFade={t:0,nb:biomeAt(me.x),done:false}; // sınırda karartma perdesi iner
     sealPromptLb=-1;
     if(carriedIdx.length>=sealCost()){ // yeterli an taşıyorsan feneri yakabilirsin
       for(var sb2=0;sb2<STAGES-1;sb2++){
@@ -1663,6 +1686,15 @@ function draw(){
     ctx.globalAlpha=1;
   }
 
+  if((chain>0||chainFlashT>0)&&mode==='play'&&!dead){ // zincir: kenarlar ısınır
+    var ca=Math.min(0.26,0.07*chain)+(chainFlashT>0?chainFlashT*0.45:0);
+    ctx.globalAlpha=Math.min(0.5,ca);ctx.fillStyle='#FFE9A8';
+    ctx.fillRect(0,0,W,2);ctx.fillRect(0,H-2,W,2);
+    ctx.fillRect(0,0,2,H);ctx.fillRect(W-2,0,2,H);
+    ctx.globalAlpha=Math.min(0.25,ca*0.5);
+    ctx.fillRect(2,2,W-4,1);ctx.fillRect(2,H-3,W-4,1);
+    ctx.globalAlpha=1;
+  }
   if(mode!=='idle'){
     var hudCol=(TH.celestial==='sun')?'#14172B':'#F5EFE0';
     var hudMut=(TH.celestial==='sun')?'#2E3A44':'#7A8199';
@@ -1695,6 +1727,13 @@ function draw(){
     ctx.fillStyle='#F7C566';
     ctx.fillRect(bx0+bw2+3,7,4,3);
     ctx.fillRect(bx0+bw2+4,5,2,2);
+  }
+  if(biomeFade){ // semt geçişi: kısa karartma nefesi
+    var bf=Math.min(biomeFade.t/0.75,1);
+    ctx.globalAlpha=Math.sin(bf*Math.PI)*0.85;
+    ctx.fillStyle='#05060D';
+    ctx.fillRect(-8,-8,W+16,H+16);
+    ctx.globalAlpha=1;
   }
   ctx.restore();
 }
